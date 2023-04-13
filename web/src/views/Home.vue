@@ -27,8 +27,24 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   name: "Home",
+
+  mounted() {
+    console.log("bbbbbbbbbb");
+    // 在组件挂载后发送请求并更新数据
+    axios
+      .get("/api/")
+      .then((response) => {
+        this.message = response.data;
+        console.log("aaaaa");
+        console.log(this.message);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  },
 };
 </script>
 
