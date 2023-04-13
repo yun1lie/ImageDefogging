@@ -22,7 +22,7 @@
     </el-form-item>
     <el-form-item>
       <el-button type="text" v-on:click="resetForm">重置</el-button>
-      <el-button type="primary" native-type="submit">登录</el-button>
+      <el-button type="primary" native-type="submit" @click="login">登录</el-button>
     </el-form-item>
     <el-form-item v-if="showError" class="error-message">
       <span>{{ error }}</span>
@@ -65,6 +65,7 @@ export default {
       }
     },
     login() {
+      console.log("aaaaaaaa");
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
           if (this.checkLogin()) {
