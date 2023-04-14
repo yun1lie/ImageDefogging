@@ -2,6 +2,9 @@ import pymysql
 from pymysql import cursors
 from flask import Flask, jsonify, request
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
+import time
+import os
+
 
 from datetime import timedelta
 
@@ -76,6 +79,27 @@ def login():
         # 生成 Token 并返回给前端
         access_token = create_access_token(identity=result['id'])
         return jsonify({'token': access_token})
+
+
+@app.route('/uploadImage', methods=['POST'])
+def upload_image():
+    # 获取上传的文件
+    uploaded_file = request.files['file']
+    # 保存文件，例如可以将文件名保存为当前时间戳
+    save_path = 'uploads/' + str(int(time.time())) + '.jpg'
+
+    if not os.path.exists('uploads'):
+        os.makedirs('uploads')
+    uploaded_file.save(save_path)
+    # 返回图片URL
+    image_url = 'http://http://localhost:8080/' + save_path
+    return jsonify({
+        'code': 200,
+        'message': 'success',
+        'data': {
+            'imageUrl': image_url
+        }
+    })
 
 
 if __name__ == '__main__':
