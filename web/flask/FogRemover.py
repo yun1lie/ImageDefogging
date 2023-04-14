@@ -136,12 +136,15 @@ class FogRemover:
 
         # 对比度调整
         # adjusted_img = self.adjust_contrast(defog_img, alpha=1.5, beta=10)
-        # cv2.imshow('Adjusted', adjusted_img)
+        # cv2.imshow('Adjusted', defog_img)
         # cv2.waitKey(0)
 
         # 保存去雾后的图像
-        output_path = self.img_path.split(".")[0] + "_defog.jpg"
+        output_path = '.' + \
+            self.img_path.split(".")[0] + \
+            self.img_path.split(".")[1] + "_defog.jpg"
         cv2.imwrite(output_path, defog_img)
+        defog_img = FogRemover(output_path)
 
-        fog_degree = self.estimate_fog_degree()
-        print("去雾后腹腔镜图像雾化程度为:{:.2f}".format(fog_degree))
+        defog_degree = defog_img.estimate_fog_degree()
+        print("去雾后腹腔镜图像雾化程度为:{:.2f}".format(defog_degree))

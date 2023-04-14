@@ -1,6 +1,8 @@
 import os
 import time
 
+from FogRemover import FogRemover
+
 import pymysql
 from flask import Flask, jsonify, request
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
@@ -100,9 +102,12 @@ def upload_image():
 def handle_image():
     # 从请求中获取屏幕截图路径数据
     screen_image_url = request.json.get('screenImageUrl')
+    url = './' + 'static'+ screen_image_url.split('static')[1]
     # 进行处理操作
     # ...
-    print(screen_image_url)
+    print(url)
+    fr = FogRemover(url)
+    fr.process()
     return jsonify({'result': 'success'})
 
 
