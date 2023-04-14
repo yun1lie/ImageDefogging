@@ -54,6 +54,7 @@ export default {
   },
   methods: {
     checkLogin() {
+      // 向服务器发起 POST 请求，发送登录表单数据
       axios
         .post("/api/login", {
           username: this.loginForm.username,
@@ -61,17 +62,35 @@ export default {
         })
         .then((response) => {
           // 登录成功后的处理
-          // 例如保存 token、跳转页面等等
           console.log("登录成功！");
           console.log(response);
-          return true;
+
+          // 判断服务器返回的数据中是否有 token
+          if (response.data.token) {
+            // 说明登录成功
+            // 将服务器返回的 token 保存在本地，供后续使用
+            localStorage.setItem("token", response.data.token);
+
+            // 进行页面跳转等其他操作
+            this.$router.push("/userHome");
+
+            return true;
+          } else {
+            // 说明登录失败
+            // 显示后端返回的错误消息
+            alert(response.data.error);
+            return false;
+          }
         })
         .catch((error) => {
           // 登录失败后的处理
-          // 例如提示错误信息等等
+          console.error(error);
+          // 显示错误提示信息
+          alert("登录失败，请检查用户名和密码！");
           return false;
         });
     },
+
     login() {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
