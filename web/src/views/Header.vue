@@ -12,7 +12,7 @@
       <!-- 如果用户已登录，则展示用户信息和退出登录按钮 -->
       <el-dropdown v-show="user && token">
         <span class="el-dropdown-link">
-          <i class="el-icon-user"></i> {{ user.name }}
+          <i class="el-icon-user"></i> 
           <i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
