@@ -141,8 +141,8 @@ class FogRemover:
 
         # 保存去雾后的图像
         output_path = '.' + \
-            self.img_path.split(".")[0] + \
-            self.img_path.split(".")[1] + "_defog.jpg"
+        self.img_path.split(".")[0] + \
+        self.img_path.split(".")[1] + "_defog.jpg"
         cv2.imwrite(output_path, defog_img)
         defog_img = FogRemover(output_path)
 

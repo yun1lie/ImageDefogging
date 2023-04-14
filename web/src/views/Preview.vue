@@ -50,7 +50,14 @@ export default {
           screenImageUrl,
         });
         console.log(response);
-        // 处理返回数据
+        // 解析响应数据
+        if (response.data.result === "success") {
+          // 更新图片路径并在页面上显示新图片
+          this.imageUrl = response.data.url;
+          console.log(response.data.url);
+        } else {
+          this.$message.error("图片处理失败：" + response.data.message);
+        }
       } catch (error) {
         console.error(error);
       }

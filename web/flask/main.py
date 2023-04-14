@@ -102,13 +102,17 @@ def upload_image():
 def handle_image():
     # 从请求中获取屏幕截图路径数据
     screen_image_url = request.json.get('screenImageUrl')
-    url = './' + 'static'+ screen_image_url.split('static')[1]
+    url = './' + 'static' + screen_image_url.split('static')[1]
     # 进行处理操作
     # ...
-    print(url)
     fr = FogRemover(url)
     fr.process()
-    return jsonify({'result': 'success'})
+    output_path = ''
+    output_path = 'http://127.0.0.1:5000/' + \
+        url.split(".")[0] + \
+        url.split(".")[1] + "_defog.jpg"
+
+    return jsonify({'result': 'success', 'url': output_path})
 
 
 if __name__ == '__main__':
