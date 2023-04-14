@@ -1,11 +1,55 @@
 from flask import Flask, jsonify, request
 import pymysql
+from functools import wraps
 
 import datetime
 import jwt
 
 
 app = Flask(__name__)
+
+
+# 连接 MySQL 数据库
+connection = pymysql.connect(host='localhost',
+                             user='root',
+                             password='root',
+                             database='image',
+                             )
+
+
+# 定义 get_user_from_database 函数
+def get_user_from_database(token):
+    # 创建一个游标对象
+    with connection.cursor() as cursor:
+        # 使用 SELECT 语句查询数据库中的用户信息
+        sql = "SELECT * FROM users WHERE token=%s"
+        cursor.execute(sql, (token,))
+        result = cursor.fetchone()
+        # 如果查询结果不为空，则返回用户信息的字典对象
+        if result:
+            return result
+        else:
+            return None
+
+# 自定义装饰器，用于验证用户 Token
+
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        token = request.headers.get('Authorization', '').replace('Bearer ', '')
+        if verify_token(token):
+            return f(*args, **kwargs)
+        else:
+            return jsonify(message='Authentication failed'), 401
+    return decorated_function
+
+# 验证用户 Token 的方法
+
+
+def verify_token(token):
+    # 进行 Token 的解密/验签等操作
+    return True or False  # 根据实际情况返回 True 或 False
 
 
 @app.route('/')
@@ -82,6 +126,26 @@ def generate_token(user):
     token = jwt.encode(
         {'id': user['id'], 'exp': exp_time}, 'secret_key', algorithm='HS256')
     return token
+
+
+# 用户信息接口
+@app.route('/user', methods=['GET'])
+@login_required
+def get_user_info():
+    # 从请求头中获取 Token
+    token = request.headers.get('Authorization', '').replace('Bearer ', '')
+    # 进行 Token 的解密/验签等操作
+    if verify_token(token):
+        # 根据 Token 获取用户信息，并返回给前端
+        user = get_user_from_database(token)
+        return jsonify(user=user)
+    else:
+        # 如果 Token 验证失败，则返回 401 Unauthorized 状态码
+        return jsonify(message='Authentication failed'), 401
+
+
+# 关闭数据库连接
+connection.close()
 
 
 if __name__ == '__main__':
