@@ -1,11 +1,9 @@
+import os
+import time
+
 import pymysql
-from pymysql import cursors
 from flask import Flask, jsonify, request
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
-import time
-import os
-
-
 from datetime import timedelta
 
 app = Flask(__name__)
@@ -18,15 +16,8 @@ db_conn = pymysql.connect(
     database='image',
     autocommit=True,  # 自动提交事务
     charset='utf8mb4',  # 避免出现乱码
-    cursorclass=cursors.DictCursor,  # 指定返回结果为字典类型
+    cursorclass=pymysql.cursors.DictCursor,  # 指定返回结果为字典类型
 )
-
-# 使用连接获取数据
-with db_conn.cursor() as cursor:
-    sql = 'SELECT * FROM users'
-    cursor.execute(sql)
-    result = cursor.fetchall()
-    print(result)
 
 # 配置 JWT
 app.config["JWT_SECRET_KEY"] = "super-secret-key"  # 配置密钥
@@ -51,7 +42,7 @@ def get_user_info():
             return jsonify(message='User not found'), 404
 
         # 移除密码字段，避免泄露敏感信息
-        del result['password']
+        result.pop('password', None)
 
         return jsonify(user=result)
 
@@ -64,8 +55,8 @@ def hello_world():
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
-    username = data['username']
-    password = data['password']
+    username = data.get('username')
+    password = data.get('password')
 
     # 在数据库中验证用户名和密码
     with db_conn.cursor() as cursor:
@@ -84,15 +75,18 @@ def login():
 @app.route('/uploadImage', methods=['POST'])
 def upload_image():
     # 获取上传的文件
-    uploaded_file = request.files['file']
-    # 保存文件，例如可以将文件名保存为当前时间戳
-    save_path = 'static/' + str(int(time.time())) + '.jpg'
+    uploaded_file = request.files.get('file')
+    if not uploaded_file:
+        return jsonify({'error': '未上传文件'}), 400
 
-    if not os.path.exists('/static'):
-        os.makedirs('/static/')
+    # 保存文件，例如可以将文件名保存为当前时间戳
+    save_path = f'static/{int(time.time())}.jpg'
+    if not os.path.exists('static'):
+        os.makedirs('static')
     uploaded_file.save(save_path)
+
     # 返回图片URL
-    image_url = 'http://127.0.0.1:5000/' + save_path
+    image_url = f'http://127.0.0.1:5000/{save_path}'
     return jsonify({
         'code': 200,
         'message': 'success',

@@ -10,6 +10,9 @@
       </el-upload>
     </div>
     <el-image v-if="imageUrl" :src="imageUrl" fit="contain"></el-image>
+    <el-button type="success" icon="el-icon-picture" @click="handleImage"
+      >处理图片</el-button
+    >
   </div>
 </template>
 
@@ -35,6 +38,10 @@ export default {
     handleSuccess(response) {
       console.log(response);
       this.imageUrl = response.data.imageUrl;
+    },
+    handleImage() {
+      // 处理图片的函数
+      console.log("处理图片");
     },
   },
 };
