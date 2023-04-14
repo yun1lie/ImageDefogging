@@ -17,6 +17,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   data() {
     return {
@@ -39,9 +41,19 @@ export default {
       console.log(response);
       this.imageUrl = response.data.imageUrl;
     },
-    handleImage() {
-      // 处理图片的函数
-      console.log("处理图片");
+    async handleImage() {
+      try {
+        // 获取当前屏幕截图路径
+        const screenImageUrl = this.imageUrl;
+        // 发送 POST 请求并携带图片路径数据
+        const response = await axios.post("/api/handleImage", {
+          screenImageUrl,
+        });
+        console.log(response);
+        // 处理返回数据
+      } catch (error) {
+        console.error(error);
+      }
     },
   },
 };

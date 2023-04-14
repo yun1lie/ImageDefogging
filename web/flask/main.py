@@ -96,5 +96,15 @@ def upload_image():
     })
 
 
+@app.route('/handleImage', methods=['POST'])
+def handle_image():
+    # 从请求中获取屏幕截图路径数据
+    screen_image_url = request.json.get('screenImageUrl')
+    # 进行处理操作
+    # ...
+    print(screen_image_url)
+    return jsonify({'result': 'success'})
+
+
 if __name__ == '__main__':
     app.run(debug=True)
