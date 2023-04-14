@@ -54,26 +54,29 @@ export default {
   },
   methods: {
     checkLogin() {
-      if (
-        this.loginForm.username === "admin" &&
-        this.loginForm.password === "123456"
-      ) {
-        // 执行登录逻辑
-        console.log("登录成功！");
-        return true;
-      } else {
-        // 显示表单错误信息
-        this.error = "用户名或密码错误";
-        return false;
-      }
+      axios
+        .post("/api/login", {
+          username: this.loginForm.username,
+          password: this.loginForm.password,
+        })
+        .then((response) => {
+          // 登录成功后的处理
+          // 例如保存 token、跳转页面等等
+          console.log("登录成功！");
+          console.log(response);
+          return true;
+        })
+        .catch((error) => {
+          // 登录失败后的处理
+          // 例如提示错误信息等等
+          return false;
+        });
     },
     login() {
-      console.log("aaaaaaaa");
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
           if (this.checkLogin()) {
             // 执行登录逻辑
-            console.log("登录成功！");
           } else {
             // 显示表单错误信息
             this.showError = true;
