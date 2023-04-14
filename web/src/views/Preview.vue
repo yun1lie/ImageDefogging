@@ -1,19 +1,30 @@
 <template>
-  <div>
-    <div class="upload">
+  <div class="container">
+    <div class="upload-container">
       <el-upload
         class="upload-demo"
         action="/api/uploadImage"
+        :before-upload="beforeUpload"
         :on-success="handleSuccess"
       >
-        <el-button type="primary" icon="el-icon-upload">点击上传图片</el-button>
+        <div class="upload-area">
+          <i class="el-icon-upload"></i>
+          <div class="tip">点击上传图片</div>
+        </div>
       </el-upload>
     </div>
-    <el-image v-if="imageUrl" :src="imageUrl" fit="contain"></el-image>
-    <el-image v-if="imageUrl" :src="imageUrl2" fit="contain"></el-image>
-    <el-button type="success" icon="el-icon-picture" @click="handleImage"
-      >处理图片</el-button
-    >
+
+    <div class="image-container" v-show="imageUrl2">
+      <el-image :src="imageUrl" fit="contain"></el-image>
+
+      <el-image :src="imageUrl2" fit="contain"></el-image>
+    </div>
+
+    <div class="button-container">
+      <el-button class="process-btn" type="success" @click="handleImage">
+        处理图片
+      </el-button>
+    </div>
   </div>
 </template>
 
@@ -43,8 +54,6 @@ export default {
       console.log(response);
       this.imageUrl = response.data.imageUrl;
       this.imageUrl2 = response.data.imageUrl;
-
-
     },
     async handleImage() {
       try {
@@ -70,3 +79,56 @@ export default {
   },
 };
 </script>
+
+<style>
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px;
+}
+
+.upload-container {
+  width: 500px;
+  height: 250px;
+  border: 2px dashed #ddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.upload-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #999;
+  font-size: 16px;
+}
+
+.upload-area i {
+  font-size: 50px;
+}
+
+.image-container {
+  margin-top: 25px;
+}
+
+.button-container {
+  margin-top: 25px;
+}
+
+.process-btn {
+  background-color: #4caf50;
+  color: #fff;
+}
+
+.tip {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.el-image__inner {
+  max-height: 500px;
+  width: auto !important;
+}
+</style>
