@@ -12,7 +12,7 @@
       <!-- 如果用户已登录，则展示用户信息和退出登录按钮 -->
       <el-dropdown v-show="user && token">
         <span class="el-dropdown-link">
-          <i class="el-icon-user"></i> 
+          <i class="el-icon-user">{{this.realName}}</i>
           <i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
@@ -31,7 +31,7 @@ import axios from "axios";
 
 export default {
   data() {
-    return {};
+    return { realName: null };
   },
   computed: {
     user() {
@@ -53,6 +53,9 @@ export default {
         })
         .then((response) => {
           localStorage.setItem("user", JSON.stringify(response.data));
+          const user = JSON.parse(localStorage.getItem("user"));
+          this.realName = user.user.real_name;
+          console.log(this.realName);
         })
         .catch((error) => {
           console.error(error);
