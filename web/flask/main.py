@@ -86,13 +86,13 @@ def upload_image():
     # 获取上传的文件
     uploaded_file = request.files['file']
     # 保存文件，例如可以将文件名保存为当前时间戳
-    save_path = 'uploads/' + str(int(time.time())) + '.jpg'
+    save_path = 'static/' + str(int(time.time())) + '.jpg'
 
-    if not os.path.exists('uploads'):
-        os.makedirs('uploads')
+    if not os.path.exists('/static'):
+        os.makedirs('/static/')
     uploaded_file.save(save_path)
     # 返回图片URL
-    image_url = 'http://http://localhost:8080/' + save_path
+    image_url = 'http://127.0.0.1:5000/' + save_path
     return jsonify({
         'code': 200,
         'message': 'success',
