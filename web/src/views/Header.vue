@@ -3,9 +3,9 @@
     <div class="logo">Logo</div>
     <div class="nav">
       <el-menu :default-active="$route.path" mode="horizontal">
-        <el-menu-item index="/">首页</el-menu-item>
-        <el-menu-item index="/about">关于我们</el-menu-item>
-        <el-menu-item index="/contact">联系我们</el-menu-item>
+        <el-menu-item index="/"
+          ><router-link to="/">首页</router-link></el-menu-item
+        >
       </el-menu>
     </div>
     <div class="user-info">

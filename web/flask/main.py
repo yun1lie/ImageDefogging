@@ -1,5 +1,7 @@
+from models import User, db
 import os
 import time
+from datetime import datetime
 
 from FogRemover import FogRemover
 
@@ -8,7 +10,13 @@ from flask import Flask, jsonify, request
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
 from datetime import timedelta
 
+
+from werkzeug.security import generate_password_hash
+
+
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost/image'
+db.init_app(app)
 
 # 创建 MySQL 连接对象
 db_conn = pymysql.connect(
@@ -113,6 +121,49 @@ def handle_image():
         url.split(".")[1] + "_defog.jpg"
 
     return jsonify({'result': 'success', 'url': output_path})
+
+
+@app.route('/register', methods=['POST'])
+def register():
+    # 从表单中获取数据
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+    email = data.get('email')
+    phone = data.get('phone')
+    real_name = data.get('real_name')
+    department = data.get('department')
+    role = data.get('role')
+
+    # 检查数据是否完整
+    if not all(k in data for k in ("username", "password", "email")):
+        return jsonify({"error": "Missing required fields"}), 400
+
+    # 检查用户名是否已经被注册
+    if User.query.filter_by(username=username).first():
+        return jsonify({"error": "Username already exists"}), 400
+
+    # 检查电子邮件是否已经被注册
+    if User.query.filter_by(email=email).first():
+        return jsonify({"error": "Email already exists"}), 400
+
+    # 处理表单数据
+    user = User(
+        username=username,
+        password=password,
+        email=email,
+        phone=phone,
+        real_name=real_name,
+        department=department,
+        role=role,
+        create_time=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        update_time=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    )
+    db.session.add(user)
+    db.session.commit()
+
+    # 返回响应
+    return jsonify({"message": "Register Success"}), 201
 
 
 if __name__ == '__main__':
