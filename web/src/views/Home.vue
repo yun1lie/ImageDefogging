@@ -7,11 +7,15 @@
         :md="{ span: 12 }"
         :lg="{ span: 8 }"
       >
-        <img src="@/assets/images/logo.jpeg" alt="logo" />
-        <h1>腹腔镜图像去雾系统</h1>
-        <p>欢迎使用我们的系统，通过去除手术内部雾气，使医生更好地进行手术。</p>
+        <img class="logo-img" src="@/assets/images/logo.jpeg" alt="logo" />
+        <h1 class="title">腹腔镜图像去雾系统</h1>
+        <p class="comment">
+          欢迎使用我们的系统，通过去除手术内部雾气，使医生更好地进行手术。
+        </p>
         <router-link to="/login">
-          <el-button type="primary" size="medium">登录</el-button>
+          <el-button class="login-button" type="primary" size="medium"
+            >登录</el-button
+          >
         </router-link>
       </el-col>
       <el-col
@@ -20,7 +24,11 @@
         :md="{ span: 12 }"
         :lg="{ span: 16 }"
       >
-        <img src="@/assets/images/home-image.jpeg" alt="home image" />
+        <img
+          class="home-img"
+          src="@/assets/images/home-image.jpeg"
+          alt="home image"
+        />
       </el-col>
     </el-row>
   </div>
@@ -28,8 +36,15 @@
 
 <script>
 import axios from "axios";
+
 export default {
   name: "Home",
+
+  data() {
+    return {
+      message: "",
+    };
+  },
 
   mounted() {
     console.log("bbbbbbbbbb");
@@ -55,29 +70,30 @@ export default {
 }
 
 .logo-img {
-  max-width: 80px;
+  max-width: 150px;
   margin-bottom: 20px;
 }
 
 .title {
-  font-size: 36px;
+  font-size: 48px;
   margin-top: 30px;
   margin-bottom: 20px;
   font-weight: bold;
 }
 
 .comment {
-  font-size: 18px;
+  font-size: 20px;
   margin-bottom: 30px;
+  line-height: 1.5;
 }
 
 .login-button {
-  font-size: 18px;
+  font-size: 20px;
   width: 140px;
 }
 
 .home-img {
-  max-height: 500px;
+  max-height: 600px;
   object-fit: cover;
 }
 </style>

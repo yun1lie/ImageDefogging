@@ -3,7 +3,7 @@
     <div class="main-container">
       <Upload />
       <Preview />
-      <Parameters />
+      <!-- <Parameters /> -->
     </div>
   </el-main>
 </template>
