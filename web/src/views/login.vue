@@ -10,14 +10,14 @@
     >
       <el-form-item label="用户名" prop="username">
         <el-input
-          v-model.lazy.trim="loginForm.username"
+          v-model.trim="loginForm.username"
           autocomplete="off"
         ></el-input>
       </el-form-item>
       <el-form-item label="密码" prop="password">
         <el-input
           type="password"
-          v-model.lazy.trim="loginForm.password"
+          v-model.trim="loginForm.password"
           autocomplete="off"
         ></el-input>
       </el-form-item>
@@ -70,6 +70,19 @@ export default {
   },
 
   methods: {
+    async checkLoginSuccess(response) {
+      // 保存 token
+      localStorage.setItem("token", response.data.token);
+      console.log("登录成功！");
+      return true;
+    },
+
+    checkLoginFailure(error) {
+      console.error(error);
+      this.error = "登录失败，请检查用户名和密码！";
+      return false;
+    },
+
     async checkLogin() {
       try {
         const response = await axios.post("/api/login", {
@@ -77,37 +90,21 @@ export default {
           password: this.loginForm.password,
         });
 
-        // 判断服务器返回的数据中是否有 token
         if (response.data.token) {
-          // 说明登录成功
-          // 将服务器返回的 token 保存在本地，供后续使用
-          localStorage.setItem("token", response.data.token);
-
-          return true;
+          return await this.checkLoginSuccess(response);
         } else {
-          // 说明登录失败
-          // 显示后端返回的错误消息
-          this.error = response.data.error;
-          return false;
+          return this.checkLoginFailure(response.data.error);
         }
       } catch (error) {
-        // 登录失败后的处理
-        console.error(error);
-        // 显示错误提示信息
-        this.error = "登录失败，请检查用户名和密码！";
-        return false;
+        return this.checkLoginFailure(error);
       }
     },
 
     async login() {
       try {
         if (await this.checkLogin()) {
-          // 执行登录逻辑
-          console.log("登录成功！");
-          // 进行页面跳转等其他操作
           this.$router.push("/userHome");
         } else {
-          // 显示表单错误信息
           this.showError = true;
         }
       } catch (error) {
@@ -116,16 +113,11 @@ export default {
     },
 
     forgotPassword() {
-      // 执行忘记密码逻辑
       alert("请联系客服找回密码");
     },
 
     resetForm() {
-      Object.assign(this.loginForm, {
-        username: "",
-        password: "",
-        remember: false,
-      });
+      this.$refs.loginForm.resetFields();
       this.showError = false;
       this.error = "";
     },
@@ -137,6 +129,10 @@ export default {
 .login-form-container {
   max-width: 400px;
   margin: 100px auto;
+  background-color: #f0f2f5;
+  padding: 50px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
 .title {

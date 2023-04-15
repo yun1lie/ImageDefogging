@@ -29,6 +29,26 @@
           src="@/assets/images/home-image.jpeg"
           alt="home image"
         />
+        <el-form
+          class="subscribe-form"
+          :model="form"
+          :rules="rules"
+          ref="form"
+          label-width="100px"
+        >
+          <h2>预约试用</h2>
+          <el-form-item label="姓名" prop="name">
+            <el-input v-model="form.name"></el-input>
+          </el-form-item>
+          <el-form-item label="联系方式" prop="phone">
+            <el-input v-model="form.phone"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click.prevent="handleSubmit"
+              >提交</el-button
+            >
+          </el-form-item>
+        </el-form>
       </el-col>
     </el-row>
   </div>
@@ -43,7 +63,42 @@ export default {
   data() {
     return {
       message: "",
+      form: {
+        name: "",
+        phone: "",
+      },
+      rules: {
+        name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
+        phone: [
+          { required: true, message: "请输入联系方式", trigger: "blur" },
+          {
+            pattern: /^1\d{10}$/,
+            message: "请输入正确的手机号码",
+            trigger: "blur",
+          },
+        ],
+      },
     };
+  },
+
+  methods: {
+    handleSubmit() {
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          axios
+            .post("/api/subscribe", this.form)
+            .then((response) => {
+              this.$message.success("预约成功！");
+              // 清空表单
+              this.form.name = "";
+              this.form.phone = "";
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        }
+      });
+    },
   },
 
   mounted() {
@@ -95,5 +150,18 @@ export default {
 .home-img {
   max-height: 600px;
   object-fit: cover;
+}
+
+.subscribe-form {
+  margin-top: 50px;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.subscribe-form h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: left;
 }
 </style>

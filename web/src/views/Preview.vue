@@ -6,24 +6,45 @@
         action="/api/uploadImage"
         :before-upload="beforeUpload"
         :on-success="handleSuccess"
+        :show-file-list="false"
       >
-        <div class="upload-area">
+        <div class="upload-area" :class="{ disabled: imageUrl === '' }">
           <i class="el-icon-upload"></i>
           <div class="tip">点击上传图片</div>
+          <el-image
+            class="preview-image"
+            :src="imageUrl"
+            fit="contain"
+          ></el-image>
         </div>
+
+        <div class="success-message" v-if="imageUrl">上传成功！</div>
       </el-upload>
     </div>
 
     <div class="image-container" v-show="imageUrl2">
-      <el-image :src="imageUrl" fit="contain"></el-image>
-
+      <h2>处理后的图片</h2>
+      <!-- <el-image :src="imageUrl" fit="contain"></el-image> -->
       <el-image :src="imageUrl2" fit="contain"></el-image>
     </div>
 
     <div class="button-container">
-      <el-button class="process-btn" type="success" @click="handleImage">
-        处理图片
+      <el-button
+        class="process-btn"
+        type="success"
+        :disabled="imageUrl === '' || isProcessing"
+        @click="handleImage"
+      >
+        <template v-if="!isProcessing"> 处理图片 </template>
+        <template v-else>
+          <i class="el-icon-loading"></i>
+          处理中...
+        </template>
       </el-button>
+      <div class="processing-message" v-if="isProcessing">
+        图片正在处理中，请稍等...
+      </div>
+      <div class="success-message" v-if="imageUrl2">图片处理成功！</div>
     </div>
   </div>
 </template>
@@ -36,7 +57,13 @@ export default {
     return {
       imageUrl: "",
       imageUrl2: "",
+      isProcessing: false,
     };
+  },
+  computed: {
+    isSuccess() {
+      return this.imageUrl2 !== "";
+    },
   },
   methods: {
     beforeUpload(file) {
@@ -51,41 +78,51 @@ export default {
       return true;
     },
     handleSuccess(response) {
-      console.log(response);
       this.imageUrl = response.data.imageUrl;
       this.imageUrl2 = response.data.imageUrl;
     },
     async handleImage() {
       try {
-        // 获取当前屏幕截图路径
+        this.isProcessing = true;
         const screenImageUrl = this.imageUrl;
-        // 发送 POST 请求并携带图片路径数据
+
         const response = await axios.post("/api/handleImage", {
           screenImageUrl,
         });
-        console.log(response);
-        // 解析响应数据
+
         if (response.data.result === "success") {
-          // 更新图片路径并在页面上显示新图片
           this.imageUrl2 = response.data.url;
-          console.log(response.data.url);
         } else {
           this.$message.error("图片处理失败：" + response.data.message);
         }
       } catch (error) {
         console.error(error);
+      } finally {
+        this.isProcessing = false;
       }
     },
   },
 };
 </script>
 
-<style>
+<style scoped>
 .container {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 30px;
+}
+
+h1 {
+  margin-bottom: 10px;
+  font-size: 24px;
+  color: #444;
+}
+
+p {
+  margin-bottom: 20px;
+  font-size: 16px;
+  color: #666;
 }
 
 .upload-container {
@@ -95,6 +132,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-bottom: 30px;
 }
 
 .upload-area {
@@ -103,23 +141,12 @@ export default {
   align-items: center;
   color: #999;
   font-size: 16px;
+  position: relative;
 }
 
-.upload-area i {
-  font-size: 50px;
-}
-
-.image-container {
-  margin-top: 25px;
-}
-
-.button-container {
-  margin-top: 25px;
-}
-
-.process-btn {
-  background-color: #4caf50;
-  color: #fff;
+.upload-area.disabled {
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 .tip {
@@ -127,8 +154,54 @@ export default {
   text-align: center;
 }
 
-.el-image__inner {
-  max-height: 500px;
-  width: auto !important;
+.preview-image {
+  margin-top: 20px;
+}
+
+.success-message {
+  color: #4caf50;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.image-container {
+  margin-top: 25px;
+}
+
+h2 {
+  font-size: 20px;
+  color: #444;
+  margin-bottom: 20px;
+}
+
+.button-container {
+  margin-top: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.process-btn {
+  background-color: #4caf50 !important;
+  color: #fff !important;
+  margin-bottom: 20px;
+  min-width: 150px;
+}
+
+.process-btn .el-icon-loading {
+  margin-right: 10px;
+}
+
+.processing-message {
+  color: #666;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.success-message {
+  color: #4caf50;
+  font-size: 14px;
+  margin-top: 10px;
 }
 </style>

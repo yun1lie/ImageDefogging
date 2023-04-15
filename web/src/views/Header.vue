@@ -10,18 +10,18 @@
     </div>
     <div class="user-info">
       <!-- 如果用户已登录，则展示用户信息和退出登录按钮 -->
-      <el-dropdown v-show="user && token">
+      <el-dropdown v-if="user && token">
         <span class="el-dropdown-link">
-          <i class="el-icon-user">{{this.realName}}</i>
+          <i class="el-icon-user">{{ this.realName }}</i>
           <i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item>个人信息</el-dropdown-item>
+          <el-dropdown-item @click="handleUserInfo">个人信息</el-dropdown-item>
           <el-dropdown-item @click="handleLogout">退出登录</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
       <!-- 如果用户未登录，则展示登录链接 -->
-      <router-link v-show="!user || !token" to="/login">登录</router-link>
+      <router-link v-else to="/login">登录</router-link>
     </div>
   </el-header>
 </template>
@@ -45,6 +45,10 @@ export default {
     handleLogout() {
       localStorage.removeItem("token"); // 清空本地存储中的 Token
       localStorage.removeItem("user"); // 清空本地存储中的 User
+      this.$router.push("/"); // 跳转到首页
+    },
+    handleUserInfo() {
+      this.$message.info(`用户姓名：${this.realName}`);
     },
     getUserInfo() {
       axios
@@ -69,3 +73,24 @@ export default {
   },
 };
 </script>
+
+<!-- 样式 -->
+<style scoped>
+.logo {
+  font-size: 32px;
+  color: #333;
+  margin-right: 20px;
+  float: left;
+  line-height: 80px;
+}
+
+.nav {
+  float: left;
+}
+
+.user-info {
+  float: right;
+  margin-right: 30px;
+  line-height: 80px;
+}
+</style>
