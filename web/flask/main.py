@@ -3,20 +3,26 @@ import os
 import time
 from datetime import datetime
 
+from flask_bcrypt import Bcrypt
+
+
 from FogRemover import FogRemover
 
 import pymysql
 from flask import Flask, jsonify, request
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
 from datetime import timedelta
-
+from flask_bcrypt import check_password_hash
+from flask_jwt_extended import create_access_token
 
 from werkzeug.security import generate_password_hash
+from flask_bcrypt import generate_password_hash
 
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost/image'
 db.init_app(app)
+bcrypt = Bcrypt(app)
 
 # 创建 MySQL 连接对象
 db_conn = pymysql.connect(
@@ -64,22 +70,32 @@ def hello_world():
 
 @app.route('/login', methods=['POST'])
 def login():
+    # 从表单中获取数据
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
 
-    # 在数据库中验证用户名和密码
-    with db_conn.cursor() as cursor:
-        sql = "SELECT * FROM users WHERE username=%s AND password=%s"
-        cursor.execute(sql, (username, password))
-        result = cursor.fetchone()
+    # 检查数据是否完整
+    if not all(k in data for k in ("username", "password")):
+        return jsonify({"error": "Missing required fields"}), 400
 
-        if not result:
-            return jsonify({'error': '用户名或密码错误'}), 401
+    # 检查用户是否存在
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        return jsonify({"error": "Invalid credentials"}), 401
 
-        # 生成 Token 并返回给前端
-        access_token = create_access_token(identity=result['id'])
-        return jsonify({'token': access_token})
+    print(password)
+    print(user.password)
+    print(check_password_hash(user.password, password))
+    # 检查密码是否正确
+    if not check_password_hash(user.password, password):
+        return jsonify({"error": "Invalid credentials"}), 401
+
+    # 生成 JWT Token
+    access_token = create_access_token(
+        identity=user.id, expires_delta=timedelta(days=7))
+
+    return jsonify({"access_token": access_token}), 200
 
 
 @app.route('/uploadImage', methods=['POST'])
@@ -148,9 +164,10 @@ def register():
         return jsonify({"error": "Email already exists"}), 400
 
     # 处理表单数据
+    hashed_password = generate_password_hash(password).decode('utf-8')
     user = User(
         username=username,
-        password=password,
+        password=hashed_password,
         email=email,
         phone=phone,
         real_name=real_name,
