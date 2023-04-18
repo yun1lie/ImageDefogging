@@ -115,5 +115,5 @@ def register():
     return jsonify({"message": "Register Success"}), 201
 
 
-if __name__ == 'main':
+if __name__ == '__main__':
     app.run(debug=True)
