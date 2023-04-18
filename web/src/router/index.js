@@ -20,6 +20,10 @@ const router = new VueRouter({
       path: "/register",
       component: () => import("@/views/register.vue"),
     },
+    {
+      path: "/UserInfo",
+      component: () => import("@/views/UserInfo.vue"),
+    },
   ],
 });
 

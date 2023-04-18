@@ -41,16 +41,35 @@
 .terms h3,
 .contact h3 {
   margin-bottom: 10px;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.system-info p,
+.terms ul li {
+  font-size: 14px;
+  line-height: 20px;
 }
 
 .terms ul {
   list-style: none;
   padding-left: 0;
+  margin-top: 10px;
 }
 
 .terms ul ul {
   list-style: disc;
   margin-top: 5px;
   margin-left: 20px;
+}
+
+.contact p {
+  font-size: 14px;
+  line-height: 20px;
+  margin-top: 5px;
+}
+
+.contact p:first-of-type {
+  margin-top: 0;
 }
 </style>
