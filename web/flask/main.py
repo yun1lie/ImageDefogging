@@ -95,7 +95,7 @@ def login():
     access_token = create_access_token(
         identity=user.id, expires_delta=timedelta(days=7))
 
-    return jsonify({"access_token": access_token}), 200
+    return jsonify({"token": access_token}), 200
 
 
 @app.route('/uploadImage', methods=['POST'])
