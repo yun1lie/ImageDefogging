@@ -1,5 +1,13 @@
 <template>
   <div class="container">
+    <div class="select">
+      <el-radio-group v-model="radio1">
+        <el-radio-button label="上海"></el-radio-button>
+        <el-radio-button label="DCP"></el-radio-button>
+        <el-radio-button label="广州"></el-radio-button>
+        <el-radio-button label="深圳"></el-radio-button>
+      </el-radio-group>
+    </div>
     <div class="upload-container">
       <el-upload
         class="upload-demo"
@@ -10,11 +18,12 @@
       >
         <div class="upload-area" :class="{ disabled: imageUrl === '' }">
           <i class="el-icon-upload" v-if="imageUrl == ''"></i>
-          <div class="tip" v-if="imageUrl == ''" >点击上传图片</div>
+          <div class="tip" v-if="imageUrl == ''">点击上传图片</div>
           <el-image
             class="preview-image"
             :src="imageUrl"
             fit="contain"
+            v-if="imageUrl"
           ></el-image>
         </div>
 
@@ -44,7 +53,7 @@
       <div class="processing-message" v-if="isProcessing">
         图片正在处理中，请稍等...
       </div>
-      <div class="success-message" v-if="imageUrl2">图片处理成功！</div>
+      <div class="success-message" v-if="imageUrl2!=imageUrl">图片处理成功！</div>
     </div>
   </div>
 </template>
@@ -58,6 +67,10 @@ export default {
       imageUrl: "",
       imageUrl2: "",
       isProcessing: false,
+      radio1: "上海",
+      radio2: "DCP",
+      radio3: "上海",
+      radio4: "上海",
     };
   },
   computed: {
@@ -106,6 +119,9 @@ export default {
 </script>
 
 <style scoped>
+.select{
+  margin-bottom: 100px;
+}
 .container {
   display: flex;
   flex-direction: column;
