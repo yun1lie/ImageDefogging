@@ -11,6 +11,8 @@ from flask_sqlalchemy import SQLAlchemy
 from FogRemover import FogRemover
 from models import User, db
 
+from DCP import Dehaze
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost/image'
 app.config["JWT_SECRET_KEY"] = "super-secret-key"
@@ -99,6 +101,17 @@ def handle_image():
     fr.process()
     output_path = 'http://127.0.0.1:5000/' + \
         url.split(".")[0] + url.split(".")[1] + "_defog.jpg"
+    return jsonify({'result': 'success', 'url': output_path})
+
+
+@app.route('/handleDCP', methods=['POST'])
+def hadnle_image_DCP():
+    screen_image_url = request.json.get('screenImageUrl')
+    url = './' + 'static' + screen_image_url.split('static')[1]
+    dcp = Dehaze()
+    dcp.process_images(url)
+    output_path = 'http://127.0.0.1:5000/' + \
+        url.split(".")[0] + url.split(".")[1] + "_defogDCP.jpg"
     return jsonify({'result': 'success', 'url': output_path})
 
 

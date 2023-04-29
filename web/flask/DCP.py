@@ -75,18 +75,16 @@ class Dehaze:
 
         return Y
 
-    def process_images(self, input_dir='../imgs', output_dir='DCP'):
+    def process_images(self, img_name):
+        save_path = '.' + \
+            img_name.split(".")[0] + \
+            img_name.split(".")[1] + "_defogDCP.jpg"
         # 处理图片函数
-        if not os.path.exists(output_dir):
-            os.makedirs(output_dir)
-
-        img_names = os.listdir(input_dir)
-
-        for img_name in img_names:
-            if img_name.endswith('jpg') or img_name.endswith('png'):
-                img_path = os.path.join(input_dir, img_name)
-                m = self.dehaze(cv2.imread(img_path) / 255.0) * 255
-                save_path = os.path.join(output_dir, img_name)
-                cv2.imwrite(save_path, m)
+        if img_name.endswith('jpg') or img_name.endswith('png'):
+            # img_path = os.path.join(input_dir, img_name)
+            m = self.dehaze(cv2.imread(img_name) / 255.0) * 255
+            # save_path = os.path.join(output_path, img_name)
+            cv2.imwrite(save_path, m)
+            print(save_path)
 
         print('Done processing images.')

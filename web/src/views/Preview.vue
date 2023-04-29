@@ -115,6 +115,27 @@ export default {
           this.isProcessing = false;
         }
       }
+
+      if (this.radio1 == "DCP") {
+        try {
+          this.isProcessing = true;
+          const screenImageUrl = this.imageUrl;
+
+          const response = await axios.post("/api/handleDCP", {
+            screenImageUrl,
+          });
+
+          if (response.data.result === "success") {
+            this.imageUrl2 = response.data.url;
+          } else {
+            this.$message.error("图片处理失败：" + response.data.message);
+          }
+        } catch (error) {
+          console.error(error);
+        } finally {
+          this.isProcessing = false;
+        }
+      }
     },
   },
 };
