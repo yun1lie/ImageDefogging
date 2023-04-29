@@ -30,6 +30,13 @@ db_conn = pymysql.connect(
     cursorclass=pymysql.cursors.DictCursor,
 )
 
+# 处理静态文件请求
+
+
+@app.route('/static/<path:path>')
+def send_static(path):
+    return send_from_directory('static', path)
+
 
 @app.route('/')
 def hello_world():

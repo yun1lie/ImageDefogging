@@ -11,7 +11,7 @@
  Target Server Version : 80026
  File Encoding         : 65001
 
- Date: 13/04/2023 19:46:38
+ Date: 22/04/2023 15:20:38
 */
 
 SET NAMES utf8mb4;
@@ -26,12 +26,12 @@ CREATE TABLE `image`  (
   `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '图像名称',
   `path` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '图像路径',
   `description` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '图像描述',
-  `upload_time` datetime(0) NULL DEFAULT NULL COMMENT '上传时间',
+  `upload_time` datetime(6) NULL DEFAULT NULL COMMENT '上传时间',
   `uploader_id` int(0) NULL DEFAULT NULL COMMENT '上传者ID',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `fk_uploader`(`uploader_id`) USING BTREE,
   CONSTRAINT `fk_uploader` FOREIGN KEY (`uploader_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+);
 
 -- ----------------------------
 -- Records of image
@@ -55,12 +55,12 @@ CREATE TABLE `operation_record`  (
   `id` int(0) NOT NULL AUTO_INCREMENT COMMENT '操作记录唯一标识ID',
   `operator_id` int(0) NULL DEFAULT NULL COMMENT '操作者ID',
   `operate_type` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '操作类型',
-  `operate_time` datetime(0) NULL DEFAULT NULL COMMENT '操作时间',
+  `operate_time` datetime(6) NULL DEFAULT NULL COMMENT '操作时间',
   `operate_content` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '操作内容',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `fk_operator`(`operator_id`) USING BTREE,
   CONSTRAINT `fk_operator` FOREIGN KEY (`operator_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+);
 
 -- ----------------------------
 -- Records of operation_record
@@ -81,18 +81,18 @@ INSERT INTO `operation_record` VALUES (10, 5, '上传图像', '2023-04-13 19:48:
 -- ----------------------------
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users`  (
-  `id` int(0) NOT NULL AUTO_INCREMENT COMMENT '用户唯一标识ID\r\n',
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '用户唯一标识ID\r\n',
   `username` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '用户名',
-  `password` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '密码',
+  `password` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '密码',
   `email` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '邮箱',
   `phone` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '电话',
   `real_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '真实姓名',
   `department` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '所属部门',
   `role` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '角色',
-  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
-  `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
+  `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 17 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of users
@@ -107,5 +107,8 @@ INSERT INTO `users` VALUES (7, 'admin2', '123456', 'admin2@example.com', '123456
 INSERT INTO `users` VALUES (8, 'admin3', '123456', 'admin3@example.com', '12345678908', '管理员三', '系统管理部门', '系统管理员', '2023-04-13 19:35:54', '2023-04-13 19:35:54');
 INSERT INTO `users` VALUES (9, 'superadmin1', '123456', 'superadmin1@example.com', '12345678909', '超级管理员一', '系统管理部门', '超级管理员', '2023-04-13 19:35:54', '2023-04-13 19:35:54');
 INSERT INTO `users` VALUES (10, 'superadmin2', '123456', 'superadmin2@example.com', '12345678910', '超级管理员二', '系统管理部门', '超级管理员', '2023-04-13 19:35:54', '2023-04-13 19:35:54');
+INSERT INTO `users` VALUES (15, 'user13', '123456', '1@qq.com', '17733333333', '1', '1', '1', '2023-04-15 21:34:17', '2023-04-15 21:34:17');
+INSERT INTO `users` VALUES (16, 'user12', '$2b$12$ZvAM4SouC64VaY6k0tbUSOMOf2welMaBDwNxomujfUOeIbTjti/2C', '11@qq.com', '17722222222', 'aa', 'aaaa', 'aa', '2023-04-19 06:52:37', '2023-04-19 06:52:37');
+INSERT INTO `users` VALUES (17, 'user15', '$2b$12$iWt3eED.1YjaytWdA5TV1ObOdkRcRx0awbZZBaXIqDV1LoO4xXNYe', '111@qq.com', '17744444444', 'a', 'a', 'a', '2023-04-19 07:10:54', '2023-04-19 07:10:54');
 
 SET FOREIGN_KEY_CHECKS = 1;

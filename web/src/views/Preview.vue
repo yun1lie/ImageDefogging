@@ -9,8 +9,8 @@
         :show-file-list="false"
       >
         <div class="upload-area" :class="{ disabled: imageUrl === '' }">
-          <i class="el-icon-upload"></i>
-          <div class="tip">点击上传图片</div>
+          <i class="el-icon-upload" v-if="imageUrl == ''"></i>
+          <div class="tip" v-if="imageUrl == ''" >点击上传图片</div>
           <el-image
             class="preview-image"
             :src="imageUrl"
