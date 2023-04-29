@@ -2,7 +2,7 @@
   <div class="container">
     <div class="select">
       <el-radio-group v-model="radio1">
-        <el-radio-button label="上海"></el-radio-button>
+        <el-radio-button label="D"></el-radio-button>
         <el-radio-button label="DCP"></el-radio-button>
         <el-radio-button label="广州"></el-radio-button>
         <el-radio-button label="深圳"></el-radio-button>
@@ -53,7 +53,9 @@
       <div class="processing-message" v-if="isProcessing">
         图片正在处理中，请稍等...
       </div>
-      <div class="success-message" v-if="imageUrl2!=imageUrl">图片处理成功！</div>
+      <div class="success-message" v-if="imageUrl2 != imageUrl">
+        图片处理成功！
+      </div>
     </div>
   </div>
 </template>
@@ -67,10 +69,7 @@ export default {
       imageUrl: "",
       imageUrl2: "",
       isProcessing: false,
-      radio1: "上海",
-      radio2: "DCP",
-      radio3: "上海",
-      radio4: "上海",
+      radio1: "D",
     };
   },
   computed: {
@@ -95,23 +94,26 @@ export default {
       this.imageUrl2 = response.data.imageUrl;
     },
     async handleImage() {
-      try {
-        this.isProcessing = true;
-        const screenImageUrl = this.imageUrl;
+      console.log("目前算法为:", this.radio1);
+      if (this.radio1 == "D") {
+        try {
+          this.isProcessing = true;
+          const screenImageUrl = this.imageUrl;
 
-        const response = await axios.post("/api/handleImage", {
-          screenImageUrl,
-        });
+          const response = await axios.post("/api/handleImage", {
+            screenImageUrl,
+          });
 
-        if (response.data.result === "success") {
-          this.imageUrl2 = response.data.url;
-        } else {
-          this.$message.error("图片处理失败：" + response.data.message);
+          if (response.data.result === "success") {
+            this.imageUrl2 = response.data.url;
+          } else {
+            this.$message.error("图片处理失败：" + response.data.message);
+          }
+        } catch (error) {
+          console.error(error);
+        } finally {
+          this.isProcessing = false;
         }
-      } catch (error) {
-        console.error(error);
-      } finally {
-        this.isProcessing = false;
       }
     },
   },
@@ -119,7 +121,7 @@ export default {
 </script>
 
 <style scoped>
-.select{
+.select {
   margin-bottom: 100px;
 }
 .container {
