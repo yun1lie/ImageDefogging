@@ -35,11 +35,14 @@
 <style scoped>
 .footer {
   background-color: #f5f5f5;
-  padding: 20px 0;
+    height: 300px;
+  padding-top: 20px;
+  padding-bottom: 250px;
 }
 
 .container {
   max-width: 1200px;
+
   margin: 0 auto;
   display: flex;
   flex-wrap: wrap;

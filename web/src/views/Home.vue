@@ -1,12 +1,12 @@
 <template>
   <div class="home">
     <el-row>
-      <el-col
+      <!-- <el-col
         :xs="{ span: 24 }"
         :sm="{ span: 24 }"
         :md="{ span: 12 }"
         :lg="{ span: 8 }"
-      >
+      > -->
         <img class="logo-img" src="@/assets/images/logo.jpeg" alt="logo" />
         <h1 class="title">腹腔镜图像去雾系统</h1>
         <p class="comment">
@@ -17,8 +17,8 @@
             >登录</el-button
           >
         </router-link>
-      </el-col>
-      <el-col
+      <!-- </el-col> -->
+      <!-- <el-col
         :xs="{ span: 24 }"
         :sm="{ span: 24 }"
         :md="{ span: 12 }"
@@ -49,7 +49,7 @@
             >
           </el-form-item>
         </el-form>
-      </el-col>
+      </el-col> -->
     </el-row>
   </div>
 </template>

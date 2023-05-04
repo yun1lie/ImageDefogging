@@ -22,10 +22,10 @@
         ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-checkbox
+        <!-- <el-checkbox
           v-model="loginForm.remember"
           label="记住密码"
-        ></el-checkbox>
+        ></el-checkbox> -->
         <el-link @click="forgotPassword">忘记密码？</el-link>
       </el-form-item>
       <el-form-item>

@@ -30,10 +30,13 @@ export default {
   grid-template-rows: 80px auto 80px;
 }
 
-.el-footer,
 .el-header {
   padding: 0 20px;
   box-shadow: 0 1px 3px #ebebeb;
+}
+
+.footer{
+  height: 300px;
 }
 
 .el-header {

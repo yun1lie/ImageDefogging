@@ -1,6 +1,6 @@
 <template>
   <el-header height="80px">
-    <div class="logo">Logo</div>
+    <div class="logo"><img src="@/assets/images/logo.jpeg" alt="" /></div>
     <div class="nav">
       <el-menu :default-active="$route.path" mode="horizontal">
         <el-menu-item index="/"
@@ -76,21 +76,38 @@ export default {
 
 <!-- 样式 -->
 <style scoped>
+.header {
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 0 50px;
+}
+
 .logo {
   font-size: 32px;
   color: #333;
   margin-right: 20px;
-  float: left;
-  line-height: 80px;
+  display: flex;
+  align-items: center;
+}
+.logo img {
+  margin-top: 10px;
+  height: 50px;
 }
 
 .nav {
-  float: left;
+  display: flex;
+  align-items: center;
 }
 
-.user-info {
-  float: right;
-  margin-right: 30px;
-  line-height: 80px;
-}
+/* .user-info {
+  position: absolute;
+  right: 30px;
+  top: 50%;
+  transform: translateY(-50%);
+  line-height: 1;
+} */
 </style>
