@@ -107,8 +107,18 @@ def handle_image():
 @app.route('/handleDCP', methods=['POST'])
 def hadnle_image_DCP():
     screen_image_url = request.json.get('screenImageUrl')
+    min_filter_radius = request.json.get('min_filter_radius')
+    guided_filter_radius = request.json.get('guided_filter_radius')
+    guided_filter_epsilon = request.json.get('guided_filter_epsilon')
+    v1_limit = request.json.get('v1_limit')
+    v1_weight = request.json.get('v1_weight')
+    bins = request.json.get('bins')
+    gamma_correction_enabled = request.json.get('gamma_correction_enabled')
+    print(min_filter_radius)
     url = './' + 'static' + screen_image_url.split('static')[1]
-    dcp = Dehaze()
+    dcp = Dehaze(min_filter_radius, guided_filter_radius,
+                 guided_filter_epsilon, v1_limit, v1_weight, bins, gamma_correction_enabled)
+    print(dcp.min_filter_radius)
     dcp.process_images(url)
     output_path = 'http://127.0.0.1:5000/' + \
         url.split(".")[0] + url.split(".")[1] + "_defogDCP.jpg"

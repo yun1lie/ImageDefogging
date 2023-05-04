@@ -68,7 +68,6 @@
           :min="1"
           :max="50"
         />
-
       </div>
       <div class="block">
         <span class="demonstration">引导滤波半径</span>
@@ -78,7 +77,6 @@
           :min="1"
           :max="100"
         />
-
       </div>
 
       <div class="block">
@@ -90,7 +88,6 @@
           :max="0.1"
           :step="0.001"
         />
-
       </div>
 
       <div class="block">
@@ -102,7 +99,6 @@
           :max="1"
           :step="0.01"
         />
-
       </div>
 
       <div class="block">
@@ -114,7 +110,6 @@
           :max="1"
           :step="0.01"
         />
-
       </div>
 
       <div class="block">
@@ -201,9 +196,22 @@ export default {
         try {
           this.isProcessing = true;
           const screenImageUrl = this.imageUrl;
-
+          const min_filter_radius = this.min_filter_radius;
+          const guided_filter_radius = this.guided_filter_radius;
+          const guided_filter_epsilon = this.guided_filter_epsilon;
+          const v1_limit = this.v1_limit;
+          const v1_weight = this.v1_weight;
+          const bins = this.bins;
+          const gamma_correction_enabled = this.gamma_correction_enabled;
           const response = await axios.post("/api/handleDCP", {
             screenImageUrl,
+            min_filter_radius,
+            guided_filter_radius,
+            guided_filter_epsilon,
+            v1_limit,
+            v1_weight,
+            bins,
+            gamma_correction_enabled,
           });
 
           if (response.data.result === "success") {
@@ -223,7 +231,7 @@ export default {
 </script>
 
 <style scoped>
-.pr{
+.pr {
   width: 600px;
 }
 .block {
