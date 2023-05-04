@@ -57,6 +57,80 @@
         图片处理成功！
       </div>
     </div>
+
+    <div class="pr" v-if="radio1 === 'DCP'">
+      <h1>参数设置</h1>
+      <div class="block">
+        <span class="demonstration">min_filter_radius</span>
+        <el-slider
+          class="slider"
+          v-model="min_filter_radius"
+          :min="1"
+          :max="50"
+        />
+
+      </div>
+      <div class="block">
+        <span class="demonstration">引导滤波半径</span>
+        <el-slider
+          class="slider"
+          v-model="guided_filter_radius"
+          :min="1"
+          :max="100"
+        />
+
+      </div>
+
+      <div class="block">
+        <span class="demonstration">引导滤波epsilon</span>
+        <el-slider
+          class="slider"
+          v-model="guided_filter_epsilon"
+          :min="0"
+          :max="0.1"
+          :step="0.001"
+        />
+
+      </div>
+
+      <div class="block">
+        <span class="demonstration">v1限制</span>
+        <el-slider
+          class="slider"
+          v-model="v1_limit"
+          :min="0"
+          :max="1"
+          :step="0.01"
+        />
+
+      </div>
+
+      <div class="block">
+        <span class="demonstration">v1权重</span>
+        <el-slider
+          class="slider"
+          v-model="v1_weight"
+          :min="0"
+          :max="1"
+          :step="0.01"
+        />
+
+      </div>
+
+      <div class="block">
+        <span class="demonstration">直方图区间数</span>
+        <el-slider class="slider" v-model="bins" :min="1" :max="5000" />
+      </div>
+
+      <div class="block">
+        <span class="demonstration">伽马校正</span>
+        <el-switch
+          v-model="gamma_correction_enabled"
+          active-text="开启"
+          inactive-text="关闭"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -66,6 +140,13 @@ import axios from "axios";
 export default {
   data() {
     return {
+      min_filter_radius: 7,
+      guided_filter_radius: 81,
+      guided_filter_epsilon: 0.001,
+      v1_limit: 0.8,
+      v1_weight: 0.95,
+      bins: 2000,
+      gamma_correction_enabled: false,
       imageUrl: "",
       imageUrl2: "",
       isProcessing: false,
@@ -142,6 +223,33 @@ export default {
 </script>
 
 <style scoped>
+.pr{
+  width: 600px;
+}
+.block {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.demonstration {
+  flex-basis: 30%;
+  font-size: 14px;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.slider {
+  flex-basis: 60%;
+  margin-right: 10px;
+}
+
+.el-input-number {
+  flex-basis: 20%;
+}
 .select {
   margin-bottom: 100px;
 }
