@@ -26,6 +26,10 @@ const router = new VueRouter({
       path: "/UserInfo",
       component: () => import("@/views/UserInfo.vue"),
     },
+    {
+      path: "/userMan",
+      component: () => import("@/views/userMan.vue"),
+    },
   ],
 });
 

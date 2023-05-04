@@ -1,5 +1,5 @@
 <template>
-  <el-header height="80px">
+  <el-header  class="header" height="80px">
     <div class="logo"><img src="@/assets/images/logo.jpeg" alt="" /></div>
     <div class="nav">
       <el-menu :default-active="$route.path" mode="horizontal">
@@ -16,8 +16,8 @@
           <i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item @click="handleUserInfo">个人信息</el-dropdown-item>
-          <el-dropdown-item @click="handleLogout">退出登录</el-dropdown-item>
+          <el-dropdown-item @click.native="handleUserInfo">个人信息</el-dropdown-item>
+          <el-dropdown-item @click.native="handleLogout">退出登录</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
       <!-- 如果用户未登录，则展示登录链接 -->
@@ -43,12 +43,13 @@ export default {
   },
   methods: {
     handleLogout() {
+      console.log("aaaaaaaaaaaaa");
       localStorage.removeItem("token"); // 清空本地存储中的 Token
       localStorage.removeItem("user"); // 清空本地存储中的 User
       this.$router.push("/"); // 跳转到首页
     },
     handleUserInfo() {
-      this.$message.info(`用户姓名：${this.realName}`);
+      this.$router.push("/UserInfo"); // 跳转到首页
     },
     getUserInfo() {
       axios
@@ -99,8 +100,9 @@ export default {
 }
 
 .nav {
+  width: 80%;
   display: flex;
-  align-items: center;
+  /* align-items: center; */
 }
 
 /* .user-info {
