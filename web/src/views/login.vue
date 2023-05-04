@@ -73,6 +73,7 @@ export default {
     async checkLoginSuccess(response) {
       // 保存 token
       localStorage.setItem("token", response.data.token);
+      this.token = response.data.token;
       console.log("登录成功！");
       return true;
     },
@@ -103,7 +104,27 @@ export default {
     async login() {
       try {
         if (await this.checkLogin()) {
-          this.$router.push("/userHome");
+          axios
+            .get("/api/user", {
+              headers: { Authorization: `Bearer ${this.token}` },
+            })
+            .then((response) => {
+              localStorage.setItem("user", JSON.stringify(response.data));
+              const user = JSON.parse(localStorage.getItem("user"));
+              this.realName = user.user.real_name;
+              // console.log(this.realName);
+              console.log(user.user.role);
+              if (user.user.role == "超级管理员") {
+                this.$router.push("/adminHome");
+              } else {
+                this.$router.push("/userHome");
+              }
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+
+          // this.$router.push("/userHome");
         } else {
           this.showError = true;
         }

@@ -118,7 +118,7 @@ def hadnle_image_DCP():
     url = './' + 'static' + screen_image_url.split('static')[1]
     dcp = Dehaze(min_filter_radius, guided_filter_radius,
                  guided_filter_epsilon, v1_limit, v1_weight, bins, gamma_correction_enabled)
-    print(dcp.min_filter_radius)
+    print(dcp.min_filter_radius,url)
     dcp.process_images(url)
     output_path = 'http://127.0.0.1:5000/' + \
         url.split(".")[0] + url.split(".")[1] + "_defogDCP.jpg"

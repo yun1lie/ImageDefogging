@@ -259,9 +259,11 @@ export default {
 
 <style scoped>
 .register-wrapper {
+ margin-top: 100px;
+ margin-bottom: 100px;
   /* background-image: url(~assets/images/register-background.jpg); */
   background-size: cover;
-  height: 100vh;
+  /* height: 100vh; */
   display: flex;
   justify-content: center;
   align-items: center;
