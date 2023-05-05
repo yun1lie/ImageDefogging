@@ -78,6 +78,26 @@ def get_users():
     # 返回查询结果
     return jsonify({'users': rows})
 
+# 处理删除用户信息的请求
+@app.route('/user/<int:user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    # 删除用户信息的SQL语句
+    delete_user_sql = "DELETE FROM users WHERE id=%s"
+    print(delete_user_sql)
+
+    # 创建游标对象
+    cursor = db_conn.cursor()
+    # 执行删除用户信息的SQL语句
+    cursor.execute(delete_user_sql, (user_id,))
+    # 提交事务
+    db_conn.commit()
+    # 关闭游标和数据库连接
+    cursor.close()
+    # 返回删除成功的信息
+    return jsonify({'message': 'User deleted successfully'})
+
+
+
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
