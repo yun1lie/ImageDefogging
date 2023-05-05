@@ -1,10 +1,15 @@
 <template>
-  <el-header  class="header" height="80px">
+  <el-header class="header" height="80px">
     <div class="logo"><img src="@/assets/images/logo.jpeg" alt="" /></div>
     <div class="nav">
       <el-menu :default-active="$route.path" mode="horizontal">
         <el-menu-item index="/"
           ><router-link to="/">首页</router-link></el-menu-item
+        >
+      </el-menu>
+      <el-menu :default-active="$route.path" mode="horizontal">
+        <el-menu-item index="/"
+          ><router-link to="/userHome">去雾</router-link></el-menu-item
         >
       </el-menu>
     </div>
@@ -16,8 +21,12 @@
           <i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item @click.native="handleUserInfo">个人信息</el-dropdown-item>
-          <el-dropdown-item @click.native="handleLogout">退出登录</el-dropdown-item>
+          <el-dropdown-item @click.native="handleUserInfo"
+            >个人信息</el-dropdown-item
+          >
+          <el-dropdown-item @click.native="handleLogout"
+            >退出登录</el-dropdown-item
+          >
         </el-dropdown-menu>
       </el-dropdown>
       <!-- 如果用户未登录，则展示登录链接 -->
@@ -33,6 +42,10 @@ export default {
   data() {
     return { realName: null };
   },
+  created() {
+    // location.reload();
+  },
+
   computed: {
     user() {
       return this.token ? JSON.parse(localStorage.getItem("user")) : null;

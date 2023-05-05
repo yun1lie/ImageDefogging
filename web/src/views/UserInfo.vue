@@ -41,6 +41,7 @@
       </div>
     </el-card>
 
+    <router-link to="userMan"> <el-button>修改个人信息</el-button></router-link>
     <!-- 底部区域 -->
     <Footer />
   </div>

@@ -118,7 +118,7 @@ def hadnle_image_DCP():
     url = './' + 'static' + screen_image_url.split('static')[1]
     dcp = Dehaze(min_filter_radius, guided_filter_radius,
                  guided_filter_epsilon, v1_limit, v1_weight, bins, gamma_correction_enabled)
-    print(dcp.min_filter_radius,url)
+    print(dcp.min_filter_radius, url)
     dcp.process_images(url)
     output_path = 'http://127.0.0.1:5000/' + \
         url.split(".")[0] + url.split(".")[1] + "_defogDCP.jpg"
@@ -143,6 +143,24 @@ def register():
     db.session.add(user)
     db.session.commit()
     return jsonify({"message": "Register Success"}), 201
+
+
+@app.route('/userMan', methods=['POST'])
+def userMan():
+    data = request.get_json()
+    user_id = data.get('id')
+    department = data.get('department')
+    with db_conn.cursor() as cursor:
+        # 更新用户信息
+        # 执行更新操作
+        sql = 'UPDATE users SET  department=%s, email=%s, phone=%s, real_name=%s, role=%s, username=%s WHERE id=%s'
+        print(sql)
+        cursor.execute(sql, (data.get('department'), data.get('email'), data.get(
+            'phone'), data.get('real_name'), data.get('role'), data.get('username'), user_id))
+
+        db_conn.commit()
+        return jsonify(db_conn.commit())
+    return data
 
 
 if __name__ == '__main__':
