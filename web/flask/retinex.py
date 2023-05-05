@@ -6,21 +6,20 @@ import cv2
 
 
 def singleScaleRetinex(img, sigma):
+    # 计算高斯模糊
+    blur = cv2.GaussianBlur(img, (0, 0), sigma)
     # 计算Retinex
-    retinex = np.log10(img) - np.log10(cv2.GaussianBlur(img, (0, 0), sigma))
+    retinex = np.log10(img) - np.log10(blur)
     return retinex
 
 # 多尺度Retinex算法
 
 
 def multiScaleRetinex(img, sigma_list):
-    # 初始化Retinex
-    retinex = np.zeros_like(img)
-    # 遍历sigma_list进行多尺度计算
-    for sigma in sigma_list:
-        retinex += singleScaleRetinex(img, sigma)
+    # 多尺度计算
+    retinex = np.sum([singleScaleRetinex(img, sigma) for sigma in sigma_list], axis=0)
     # 计算平均值
-    retinex = retinex / len(sigma_list)
+    retinex /= len(sigma_list)
     return retinex
 
 # 颜色修复算法
@@ -82,37 +81,35 @@ def MSRCR(img, sigma_list, G, b, alpha, beta, low_clip, high_clip):
 
 
 def automatedMSRCR(img, sigma_list):
-    # 对图像进行浮点数转换和加1
+    # 将图像转换为浮点数并加1
     img = np.float64(img) + 1.0
+
     # 计算多尺度Retinex
     img_retinex = multiScaleRetinex(img, sigma_list)
+
     # 对每个通道进行调整
     for i in range(img_retinex.shape[2]):
         # 统计每个像素值的数量
         unique, count = np.unique(
             np.int32(img_retinex[:, :, i] * 100), return_counts=True)
-        for u, c in zip(unique, count):
-            if u == 0:
-                zero_count = c
-                break
-        # 计算上下阈值
-        low_val = unique[0] / 100.0
-        high_val = unique[-1] / 100.0
+
+        # 获取像素值为0的数量
+        zero_count = count[np.where(unique == 0)[0][0]]
+
+        # 找到上下阈值
         for u, c in zip(unique, count):
             if u < 0 and c < zero_count * 0.1:
                 low_val = u / 100.0
             if u > 0 and c < zero_count * 0.1:
                 high_val = u / 100.0
                 break
-        # 对每个通道进行像素值的裁剪
-        img_retinex[:, :, i] = np.maximum(np.minimum(
-            img_retinex[:, :, i], high_val), low_val)
-        # 对每个通道进行像素值范围调整
-        img_retinex[:, :, i] = (img_retinex[:, :, i] - np.min(img_retinex[:, :, i])) / \
-                               (np.max(img_retinex[:, :, i]) - np.min(img_retinex[:, :, i])) \
-            * 255
-    # 对MSRCR结果进行转换
-    img_retinex = np.uint8(img_retinex)
+
+        # 对每个通道进行像素值的裁剪和调整
+        img_retinex[:, :, i] = np.clip(img_retinex[:, :, i], low_val, high_val)
+        img_retinex[:, :, i] = ((img_retinex[:, :, i] - np.min(img_retinex[:, :, i])) /
+                                (np.max(img_retinex[:, :, i]) - np.min(img_retinex[:, :, i])) *
+                                255).astype(np.uint8)
+
     return img_retinex
 
 # MSRCR+算法

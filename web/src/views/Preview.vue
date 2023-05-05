@@ -2,10 +2,8 @@
   <div class="container">
     <div class="select">
       <el-radio-group v-model="radio1">
-        <el-radio-button label="D"></el-radio-button>
+        <el-radio-button label="retinex"></el-radio-button>
         <el-radio-button label="DCP"></el-radio-button>
-        <el-radio-button label="广州"></el-radio-button>
-        <el-radio-button label="深圳"></el-radio-button>
       </el-radio-group>
     </div>
     <div class="upload-container">
@@ -171,7 +169,7 @@ export default {
     },
     async handleImage() {
       console.log("目前算法为:", this.radio1);
-      if (this.radio1 == "D") {
+      if (this.radio1 == "retinex") {
         try {
           this.isProcessing = true;
           const screenImageUrl = this.imageUrl;

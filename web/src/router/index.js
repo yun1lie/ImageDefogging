@@ -30,6 +30,10 @@ const router = new VueRouter({
       path: "/userMan",
       component: () => import("@/views/userMan.vue"),
     },
+    {
+      path: "/adminHome",
+      component: () => import("@/views/admin.vue"),
+    },
   ],
 });
 

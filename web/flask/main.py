@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 import os
 import time
+import cv2
 
 import pymysql
 from flask import Flask, jsonify, request
@@ -12,6 +13,8 @@ from FogRemover import FogRemover
 from models import User, db
 
 from DCP import Dehaze
+
+import retinex
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost/image'
@@ -58,6 +61,22 @@ def get_user_info():
         result.pop('password', None)
         return jsonify(user=result)
 
+# 处理查询用户信息的请求
+@app.route('/users', methods=['GET'])
+def get_users():
+    
+    # 查询用户信息的SQL语句
+    query_users_sql = "SELECT * FROM users"
+    # 创建游标对象
+    cursor = db_conn.cursor()
+    # 执行查询用户信息的SQL语句
+    cursor.execute(query_users_sql)
+    # 获取查询结果
+    rows = cursor.fetchall()
+    # 关闭游标和数据库连接
+    cursor.close()
+    # 返回查询结果
+    return jsonify({'users': rows})
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -97,8 +116,19 @@ def upload_image():
 def handle_image():
     screen_image_url = request.json.get('screenImageUrl')
     url = './' + 'static' + screen_image_url.split('static')[1]
-    fr = FogRemover(url)
-    fr.process()
+    img = cv2.imread(url)
+
+    config = [15, 80, 250]
+    img_amsrcr = retinex.automatedMSRCR(
+        img,
+        config
+    )
+    output_path = '.' + \
+        url.split(".")[0] + \
+        url.split(".")[1] + "_defog.jpg"
+    cv2.imwrite(output_path, img_amsrcr)
+    # fr = FogRemover(url)
+    # fr.process()
     output_path = 'http://127.0.0.1:5000/' + \
         url.split(".")[0] + url.split(".")[1] + "_defog.jpg"
     return jsonify({'result': 'success', 'url': output_path})
