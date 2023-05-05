@@ -39,10 +39,40 @@
     <el-dialog :visible.sync="editDialogVisible" title="编辑用户">
       <el-form :model="editForm" label-width="100px">
         <el-form-item label="用户名">
-          <el-input v-model="editForm.name"></el-input>
+          <el-input v-model="editForm.username"></el-input>
         </el-form-item>
         <el-form-item label="邮箱">
           <el-input v-model="editForm.email"></el-input>
+        </el-form-item>
+        <el-form-item label="电话">
+          <el-input v-model="editForm.phone"></el-input>
+        </el-form-item>
+        <el-form-item label="姓名">
+          <el-input v-model="editForm.real_name"></el-input>
+        </el-form-item>
+        <el-form-item label="科室">
+          <!-- <el-select v-model="value" placeholder="请选择">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+               v-model="editForm.department"
+            >
+            </el-option>
+          </el-select> -->
+          <el-input v-model="editForm.department"></el-input>
+        </el-form-item>
+        <el-form-item label="职位">
+          <!-- <el-select v-model="value" placeholder="请选择"> -->
+          <!-- <el-option
+              v-for="item in options2"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select> -->
+          <el-input v-model="editForm.role"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer">
@@ -90,6 +120,38 @@ export default {
 
   data() {
     return {
+      options: [
+        {
+          value: "内科",
+          label: "内科",
+        },
+        {
+          value: "儿科",
+          label: "儿科",
+        },
+        {
+          value: "神经科",
+          label: "神经科",
+        },
+        {
+          value: "系统管理部门",
+          label: "系统管理部门",
+        },
+      ],
+      options2: [
+        {
+          value: "医生",
+          label: "医生",
+        },
+        {
+          value: "护士",
+          label: "护士",
+        },
+        {
+          value: "超级管理员",
+          label: "超级管理员",
+        },
+      ],
       searchForm: {
         name: "",
         email: "",
@@ -97,8 +159,12 @@ export default {
       userList: [],
       editDialogVisible: false,
       editForm: {
-        name: "",
+        username: "",
         email: "",
+        phone: "",
+        real_name: "",
+        department: "",
+        role: "",
       },
       createDialogVisible: false,
       createForm: {
@@ -144,8 +210,9 @@ export default {
     },
     handleEditConfirm() {
       axios
-        .put(`/api/user/${this.editForm.id}`, this.editForm)
+        .put(`/api/userInfo/${this.editForm.id}`, this.editForm)
         .then((response) => {
+          console.log(response);
           const index = this.userList.findIndex(
             (item) => item.id === response.data.id
           );

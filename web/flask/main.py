@@ -62,9 +62,11 @@ def get_user_info():
         return jsonify(user=result)
 
 # 处理查询用户信息的请求
+
+
 @app.route('/users', methods=['GET'])
 def get_users():
-    
+
     # 查询用户信息的SQL语句
     query_users_sql = "SELECT * FROM users"
     # 创建游标对象
@@ -79,6 +81,8 @@ def get_users():
     return jsonify({'users': rows})
 
 # 处理删除用户信息的请求
+
+
 @app.route('/user/<int:user_id>', methods=['DELETE'])
 def delete_user(user_id):
     # 删除用户信息的SQL语句
@@ -96,6 +100,27 @@ def delete_user(user_id):
     # 返回删除成功的信息
     return jsonify({'message': 'User deleted successfully'})
 
+
+# 管理员修改用户个人信息
+@app.route('/userInfo/<int:user_id>', methods=['PUT'])
+def update_user(user_id):
+    data = request.get_json()
+    # 创建游标对象
+    # cursor = db_conn.cursor()
+    # sql = "UPDATE `image`.`users` SET `username` = 'admin32', `email` = 'admin3@example.com2', `phone` = '123456789082', `real_name` = '管理员三2', `department` = '系统管理部门2', `role` = '系统管理员2' WHERE `id` = 8"
+    with db_conn.cursor() as cursor:
+        # 更新用户信息
+        # 执行更新操作
+        sql = 'UPDATE users SET  department=%s, email=%s, phone=%s, real_name=%s, role=%s, username=%s WHERE id=%s'
+        print(sql)
+        cursor.execute(sql, (data.get('department'), data.get('email'), data.get(
+            'phone'), data.get('real_name'), data.get('role'), data.get('username'), user_id))
+
+        db_conn.commit()
+        return jsonify(data)
+    
+    print(data)
+    return None
 
 
 @app.route('/login', methods=['POST'])
