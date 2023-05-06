@@ -128,6 +128,7 @@ export default {
 
   data() {
     return {
+      activeIndex: '1',
       options: [
         {
           value: "内科",

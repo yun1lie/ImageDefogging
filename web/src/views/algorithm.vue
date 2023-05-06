@@ -10,37 +10,56 @@
       <el-menu-item index="2">查询算法使用统计</el-menu-item>
     </el-menu>
 
-    <div id="main" style="width: 600px; height: 400px"></div>
+    <div class="Echarts">
+      <div id="main" style="width: 600px; height: 400px"></div>
+    </div>
   </div>
 </template>
 
 <script>
+import VueECharts from "vue-echarts";
+import echarts from "echarts";
+
 export default {
+  name: "EchartsDemo",
+  components: {
+    VueECharts,
+  },
   data() {
     return {
-      algorithmUsage: [
-        { algorithm: "Retinex", usageCount: 0 },
-        { algorithm: "DCP", usageCount: 0 },
-      ],
+      activeIndex: "2",
     };
   },
-  computed: {
-    chartData() {
-      const labels = this.algorithmUsage.map((item) => item.algorithm);
-      const data = this.algorithmUsage.map((item) => item.usageCount);
-      return {
-        labels,
-        datasets: [
+  mounted() {
+    // 将echarts实例绑定到Vue实例的$echarts属性上
+    this.myEcharts();
+  },
+  methods: {
+    myEcharts() {
+      var myChart = this.$echarts.init(document.getElementById("main"));
+      //配置图表
+      var option = {
+        title: {
+          text: "echarts入门示例",
+        },
+        tooltip: {},
+        legend: {
+          data: ["销量"],
+        },
+        xAxis: {
+          data: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"],
+        },
+        yAxis: {},
+        series: [
           {
-            label: "算法使用次数",
-            backgroundColor: "#409EFF",
-            data,
+            name: "销量",
+            type: "bar",
+            data: [5, 20, 36, 10, 10, 20],
           },
         ],
       };
+      myChart.setOption(option);
     },
-  },
-  methods: {
     handleSelect(index) {
       this.activeIndex = index;
       if (index === "1") {
