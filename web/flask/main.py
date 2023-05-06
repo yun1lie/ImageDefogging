@@ -60,6 +60,19 @@ def get_user_info():
             return jsonify(message='User not found'), 404
         result.pop('password', None)
         return jsonify(user=result)
+    
+    
+@app.route('/getUser', methods=['GET'])
+def get_user():
+    user_id = request.args.get('id')
+    # 根据用户id查询用户信息
+    cursor = db_conn.cursor()
+    sql = "select * from users where id=%s"
+    cursor.execute(sql, (user_id))
+    user_info = cursor.fetchall()
+    print(user_info)
+    # 将用户信息转换为JSON格式并返回
+    return jsonify(user_info)
 
 # 处理查询用户信息的请求
 

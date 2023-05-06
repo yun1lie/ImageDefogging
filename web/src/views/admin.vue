@@ -1,18 +1,26 @@
 <template>
   <div>
+    <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+      <el-menu-item index="1">管理用户</el-menu-item>
+      <el-menu-item index="2">查询算法使用统计</el-menu-item>
+    </el-menu>
     <!--用户查询-->
     <el-form :inline="true" :model="searchForm" class="search-form">
-      <el-form-item label="用户名">
-        <el-input v-model="searchForm.name"></el-input>
+      <el-form-item label="id">
+        <el-input v-model="searchForm.id"></el-input>
       </el-form-item>
-      <el-form-item label="邮箱">
+      <!-- <el-form-item label="邮箱">
         <el-input v-model="searchForm.email"></el-input>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item>
         <el-button type="primary" @click="handleSearch">查询</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="handleCreate">添加用户</el-button>
+        <router-link to="/register"
+          ><el-button type="primary" @click="handleCreate"
+            >添加用户</el-button
+          ></router-link
+        >
       </el-form-item>
     </el-form>
 
@@ -153,6 +161,7 @@ export default {
         },
       ],
       searchForm: {
+        id: "",
         name: "",
         email: "",
       },
@@ -175,20 +184,39 @@ export default {
     };
   },
   methods: {
+     handleSelect(index) {
+      this.activeIndex = index;
+      if (index === '1') {
+        this.$router.push('/adminHome');
+      } else if (index === '2') {
+        this.$router.push('/algorithm');
+      }
+    },
     handleSearch() {
-      axios
-        .get("/api/user", {
-          params: {
-            name: this.searchForm.name,
-            email: this.searchForm.email,
-          },
-        })
-        .then((response) => {
-          this.userList = response.data;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      if (this.searchForm.id == "") {
+        axios
+          .get("/api/users")
+          .then((response) => {
+            console.log(response.data.users);
+            this.userList = response.data.users;
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      } else {
+        axios
+          .get("/api/getUser", {
+            params: {
+              id: this.searchForm.id,
+            },
+          })
+          .then((response) => {
+            this.userList = response.data;
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
     },
     handleCreate() {
       this.createDialogVisible = true;

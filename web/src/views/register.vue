@@ -1,5 +1,3 @@
-根据提供的表结构，修改后的用户注册表单代码如下：
-
 <template>
   <div class="register-wrapper">
     <el-form
@@ -229,12 +227,14 @@ export default {
               console.log(res);
               if (res.status === 201) {
                 // 注册成功，跳转到登录页面
+                alert("注册成功");
                 this.$router.push("/login");
               } else {
               }
             })
             .catch((err) => {
               console.log(err);
+              alert("该邮箱或手机已被注册");
             });
         } else {
           return false;
@@ -259,8 +259,8 @@ export default {
 
 <style scoped>
 .register-wrapper {
- margin-top: 100px;
- margin-bottom: 100px;
+  margin-top: 100px;
+  margin-bottom: 100px;
   /* background-image: url(~assets/images/register-background.jpg); */
   background-size: cover;
   /* height: 100vh; */

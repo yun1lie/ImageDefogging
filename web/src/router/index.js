@@ -34,6 +34,10 @@ const router = new VueRouter({
       path: "/adminHome",
       component: () => import("@/views/admin.vue"),
     },
+    {
+      path: "/algorithm",
+      component: () => import("@/views/algorithm.vue"),
+    },
   ],
 });
 
