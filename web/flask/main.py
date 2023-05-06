@@ -255,10 +255,41 @@ def userMan():
 @app.route("/algorithm-usage")
 def get_algorithm_usage():
     algorithm_usage = {
-        "retinexCount": 10,
-        "dcpCount": 20
+        "retinexCount": 0,
+        "dcpCount": 0
     }
+    with db_conn.cursor() as cursor:
+        sql = "SELECT * FROM algorithm_usage WHERE algorithm_name=%s"
+        cursor.execute(sql, ('retinex',))
+        result = cursor.fetchone()
+        if result:
+            algorithm_usage['retinexCount'] = result['usage_count']
+
+        cursor.execute(sql, ('dcp',))
+        result = cursor.fetchone()
+        if result:
+            algorithm_usage['dcpCount'] = result['usage_count']
+
     return jsonify(algorithm_usage)
+
+# 增加retinex函数
+def increase_retinex_count():
+    with db_conn.cursor() as cursor:
+        # 查询当前使用次数
+        sql = "SELECT * FROM algorithm_usage WHERE algorithm_name='retinex算法'"
+        cursor.execute(sql)
+        result = cursor.fetchone()
+        if result:
+            usage_count = result['usage_count'] + 1
+            # 更新使用次数
+            sql = "UPDATE algorithm_usage SET usage_count=%s WHERE algorithm_name='retinex算法'"
+            cursor.execute(sql, (usage_count,))
+        else:
+            # 如果不存在记录，插入新的记录
+            sql = "INSERT INTO algorithm_usage (algorithm_name, usage_count) VALUES (%s, %s)"
+            cursor.execute(sql, ('retinex算法', 1))
+    db_conn.commit()
+
 
 
 if __name__ == '__main__':

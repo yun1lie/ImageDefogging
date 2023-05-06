@@ -70,20 +70,10 @@ export default {
     },
     async getAlgorithmUsage() {
       try {
-        const response = await fetch("/api/algorithm-usage");
-        const data = await response.json();
-
-        axios
-          .get("/api/algorithm-usage")
-          .then((response) => {
-            console.log(response.data);
-            this.retinexCount = data.retinexCount;
-            this.dcpCount = data.dcpCount;
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-
+        const response = await axios.get("/api/algorithm-usage");
+        const data = response.data;
+        this.retinexCount = data.retinexCount;
+        this.dcpCount = data.dcpCount;
         // 更新图表数据
         this.updateChartData();
       } catch (error) {
@@ -92,7 +82,7 @@ export default {
     },
     updateChartData() {
       // 获取图表实例
-      const myChart = echarts.getInstanceByDom(document.getElementById("main"));
+      const myChart = this.$echarts.getInstanceByDom(document.getElementById("main"));
       // 更新图表数据
       myChart.setOption({
         series: [
