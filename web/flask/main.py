@@ -60,8 +60,8 @@ def get_user_info():
             return jsonify(message='User not found'), 404
         result.pop('password', None)
         return jsonify(user=result)
-    
-    
+
+
 @app.route('/getUser', methods=['GET'])
 def get_user():
     user_id = request.args.get('id')
@@ -131,7 +131,7 @@ def update_user(user_id):
 
         db_conn.commit()
         return jsonify(data)
-    
+
     print(data)
     return None
 
@@ -249,6 +249,16 @@ def userMan():
         db_conn.commit()
         return jsonify(db_conn.commit())
     return data
+
+
+# 获取算法统计信息
+@app.route("/algorithm-usage")
+def get_algorithm_usage():
+    algorithm_usage = {
+        "retinexCount": 10,
+        "dcpCount": 20
+    }
+    return jsonify(algorithm_usage)
 
 
 if __name__ == '__main__':

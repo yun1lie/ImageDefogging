@@ -17,6 +17,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import VueECharts from "vue-echarts";
 import echarts from "echarts";
 
@@ -28,37 +29,78 @@ export default {
   data() {
     return {
       activeIndex: "2",
+      retinexCount: 0,
+      dcpCount: 0,
     };
   },
   mounted() {
     // 将echarts实例绑定到Vue实例的$echarts属性上
     this.myEcharts();
+    // 获取retinex算法和DCP算法的使用情况
+    this.getAlgorithmUsage();
   },
   methods: {
     myEcharts() {
       var myChart = this.$echarts.init(document.getElementById("main"));
-      //配置图表
+      // 配置图表
       var option = {
         title: {
-          text: "echarts入门示例",
+          text: "算法使用情况统计",
         },
         tooltip: {},
         legend: {
-          data: ["销量"],
+          data: ["retinex算法", "DCP算法"],
         },
         xAxis: {
-          data: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"],
+          type: "category",
+          data: ["retinex算法", "DCP算法"],
         },
-        yAxis: {},
+        yAxis: {
+          type: "value",
+        },
         series: [
           {
-            name: "销量",
+            name: "使用次数",
             type: "bar",
-            data: [5, 20, 36, 10, 10, 20],
+            data: [this.retinexCount, this.dcpCount],
           },
         ],
       };
       myChart.setOption(option);
+    },
+    async getAlgorithmUsage() {
+      try {
+        const response = await fetch("/api/algorithm-usage");
+        const data = await response.json();
+
+        axios
+          .get("/api/algorithm-usage")
+          .then((response) => {
+            console.log(response.data);
+            this.retinexCount = data.retinexCount;
+            this.dcpCount = data.dcpCount;
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+
+        // 更新图表数据
+        this.updateChartData();
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    updateChartData() {
+      // 获取图表实例
+      const myChart = echarts.getInstanceByDom(document.getElementById("main"));
+      // 更新图表数据
+      myChart.setOption({
+        series: [
+          {
+            data: [this.retinexCount, this.dcpCount],
+          },
+        ],
+      });
     },
     handleSelect(index) {
       this.activeIndex = index;
