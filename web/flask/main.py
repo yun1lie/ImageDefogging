@@ -189,6 +189,7 @@ def handle_image():
     # fr.process()
     output_path = 'http://127.0.0.1:5000/' + \
         url.split(".")[0] + url.split(".")[1] + "_defog.jpg"
+    increase_retinex_count()  # 数据库中使用数量加1
     return jsonify({'result': 'success', 'url': output_path})
 
 
@@ -210,6 +211,7 @@ def hadnle_image_DCP():
     dcp.process_images(url)
     output_path = 'http://127.0.0.1:5000/' + \
         url.split(".")[0] + url.split(".")[1] + "_defogDCP.jpg"
+    increase_dcp_count()
     return jsonify({'result': 'success', 'url': output_path})
 
 
@@ -273,24 +275,44 @@ def get_algorithm_usage():
     return jsonify(algorithm_usage)
 
 # 增加retinex函数
+
+
 def increase_retinex_count():
     with db_conn.cursor() as cursor:
         # 查询当前使用次数
-        sql = "SELECT * FROM algorithm_usage WHERE algorithm_name='retinex算法'"
+        sql = "SELECT * FROM algorithm_usage WHERE algorithm_name='retinex'"
         cursor.execute(sql)
         result = cursor.fetchone()
         if result:
             usage_count = result['usage_count'] + 1
             # 更新使用次数
-            sql = "UPDATE algorithm_usage SET usage_count=%s WHERE algorithm_name='retinex算法'"
+            sql = "UPDATE algorithm_usage SET usage_count=%s WHERE algorithm_name='retinex'"
             cursor.execute(sql, (usage_count,))
         else:
             # 如果不存在记录，插入新的记录
             sql = "INSERT INTO algorithm_usage (algorithm_name, usage_count) VALUES (%s, %s)"
-            cursor.execute(sql, ('retinex算法', 1))
+            cursor.execute(sql, ('retinex', 1))
     db_conn.commit()
 
+
+def increase_dcp_count():
+    with db_conn.cursor() as cursor:
+        # 查询当前使用次数
+        sql = "SELECT * FROM algorithm_usage WHERE algorithm_name='dcp'"
+        cursor.execute(sql)
+        result = cursor.fetchone()
+        if result:
+            usage_count = result['usage_count'] + 1
+            # 更新使用次数
+            sql = "UPDATE algorithm_usage SET usage_count=%s WHERE algorithm_name='dcp'"
+            cursor.execute(sql, (usage_count,))
+        else:
+            # 如果不存在记录，插入新的记录
+            sql = "INSERT INTO algorithm_usage (algorithm_name, usage_count) VALUES (%s, %s)"
+            cursor.execute(sql, ('dcp', 1))
+    db_conn.commit()
 
 
 if __name__ == '__main__':
     app.run(debug=True)
+    
