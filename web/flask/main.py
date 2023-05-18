@@ -13,6 +13,7 @@ from FogRemover import FogRemover
 from models import User, db
 
 from DCP import Dehaze
+from Clahe import Clahe
 
 from NonLocalDehazer import NonLocalDehazer
 
@@ -220,18 +221,27 @@ def hadnle_image_DCP():
 @app.route('/handleLocal', methods=['POST'])
 def hadnle_image_Local():
     screen_image_url = request.json.get('screenImageUrl')
-    url = './' + 'static' + screen_image_url.split('static')[1]
-
-    # np.set_printoptions(precision=4)
-    # np.set_printoptions(suppress=True)
-    # np.set_printoptions(threshold=np.inf)
-    # sys.setrecursionlimit(100000)
-    
+    url = './' + 'static' + screen_image_url.split('static')[1] 
     nld = NonLocalDehazer(url)
     nld.run()
     output_path = 'http://127.0.0.1:5000/' + \
         url.split(".")[0] + url.split(".")[1] + "_NonLocal.jpg"
-    increase_dcp_count()
+    return jsonify({'result': 'success', 'url': output_path})
+
+
+@app.route('/handleClahe', methods=['POST'])
+def hadnle_image_Clahe():
+    screen_image_url = request.json.get('screenImageUrl')
+    url = './' + 'static' + screen_image_url.split('static')[1] 
+    
+    clahe = Clahe(url)
+    clahe.split_channels()
+    clahe.apply_clahe()
+    clahe.merge_channels()
+    
+    output_path = 'http://127.0.0.1:5000/' + \
+        url.split(".")[0] + url.split(".")[1] + "_CLAHE.jpg"
+    clahe.save_images()
     return jsonify({'result': 'success', 'url': output_path})
 
 

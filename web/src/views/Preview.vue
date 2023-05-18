@@ -5,6 +5,7 @@
         <el-radio-button label="retinex"></el-radio-button>
         <el-radio-button label="DCP"></el-radio-button>
         <el-radio-button label="NonLocal"></el-radio-button>
+        <el-radio-button label="CLAHE"></el-radio-button>
       </el-radio-group>
     </div>
     <div class="upload-container">
@@ -196,6 +197,27 @@ export default {
           const screenImageUrl = this.imageUrl;
 
           const response = await axios.post("/api/handleLocal", {
+            screenImageUrl,
+          });
+
+          if (response.data.result === "success") {
+            this.imageUrl2 = response.data.url;
+          } else {
+            this.$message.error("图片处理失败：" + response.data.message);
+          }
+        } catch (error) {
+          console.error(error);
+        } finally {
+          this.isProcessing = false;
+        }
+      }
+
+      if (this.radio1 == "CLAHE") {
+        try {
+          this.isProcessing = true;
+          const screenImageUrl = this.imageUrl;
+
+          const response = await axios.post("/api/handleClahe", {
             screenImageUrl,
           });
 
