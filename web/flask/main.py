@@ -14,6 +14,8 @@ from models import User, db
 
 from DCP import Dehaze
 
+from NonLocalDehazer import NonLocalDehazer
+
 import retinex
 
 app = Flask(__name__)
@@ -215,6 +217,24 @@ def hadnle_image_DCP():
     return jsonify({'result': 'success', 'url': output_path})
 
 
+@app.route('/handleLocal', methods=['POST'])
+def hadnle_image_Local():
+    screen_image_url = request.json.get('screenImageUrl')
+    url = './' + 'static' + screen_image_url.split('static')[1]
+
+    # np.set_printoptions(precision=4)
+    # np.set_printoptions(suppress=True)
+    # np.set_printoptions(threshold=np.inf)
+    # sys.setrecursionlimit(100000)
+    
+    nld = NonLocalDehazer(url)
+    nld.run()
+    output_path = 'http://127.0.0.1:5000/' + \
+        url.split(".")[0] + url.split(".")[1] + "_NonLocal.jpg"
+    increase_dcp_count()
+    return jsonify({'result': 'success', 'url': output_path})
+
+
 @app.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
@@ -315,4 +335,3 @@ def increase_dcp_count():
 
 if __name__ == '__main__':
     app.run(debug=True)
-    
