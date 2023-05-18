@@ -14,6 +14,7 @@ from models import User, db
 
 from DCP import Dehaze
 from Clahe import Clahe
+from cap import Cap
 
 from NonLocalDehazer import NonLocalDehazer
 
@@ -242,6 +243,17 @@ def hadnle_image_Clahe():
     output_path = 'http://127.0.0.1:5000/' + \
         url.split(".")[0] + url.split(".")[1] + "_CLAHE.jpg"
     clahe.save_images()
+    return jsonify({'result': 'success', 'url': output_path})
+
+@app.route('/handleCap', methods=['POST'])
+def hadnle_image_Cap():
+    screen_image_url = request.json.get('screenImageUrl')
+    url = './' + 'static' + screen_image_url.split('static')[1] 
+    dehaze = Cap(url, beta=1)
+    dehaze.dehaze()
+    output_path = 'http://127.0.0.1:5000/' + \
+        url.split(".")[0] + url.split(".")[1] + "_Cap.jpg"
+
     return jsonify({'result': 'success', 'url': output_path})
 
 
