@@ -11,7 +11,7 @@
     </el-menu>
 
     <div class="Echarts">
-      <div id="main" style="width: 600px; height: 400px"></div>
+      <div id="main" style="width: 900px; height: 400px"></div>
     </div>
   </div>
 </template>
@@ -20,6 +20,29 @@
 import axios from "axios";
 import VueECharts from "vue-echarts";
 import echarts from "echarts";
+const chartOption = {
+  title: {
+    text: "算法使用情况统计",
+  },
+  tooltip: {},
+  legend: {
+    data: ["retinex算法", "DCP算法", "NonLocal算法" , "CLAHE算法", "CAP算法"],
+  },
+  xAxis: {
+    type: "category",
+    data: ["retinex算法", "DCP算法", "NonLocal算法" , "CLAHE算法", "CAP算法"],
+  },
+  yAxis: {
+    type: "value",
+  },
+  series: [
+    {
+      name: "使用次数",
+      type: "bar",
+      data: [0, 0, 0, 0, 0],
+    },
+  ],
+};
 
 export default {
   name: "EchartsDemo",
@@ -31,6 +54,10 @@ export default {
       activeIndex: "2",
       retinexCount: 0,
       dcpCount: 0,
+      NonLocalCount: 0,
+      CLAHECount: 0,
+      CAPCount: 0,
+      myChart: null,
     };
   },
   mounted() {
@@ -40,40 +67,22 @@ export default {
     this.getAlgorithmUsage();
   },
   methods: {
-    myEcharts() {
-      var myChart = this.$echarts.init(document.getElementById("main"));
-      // 配置图表
-      var option = {
-        title: {
-          text: "算法使用情况统计",
-        },
-        tooltip: {},
-        legend: {
-          data: ["retinex算法", "DCP算法"],
-        },
-        xAxis: {
-          type: "category",
-          data: ["retinex算法", "DCP算法"],
-        },
-        yAxis: {
-          type: "value",
-        },
-        series: [
-          {
-            name: "使用次数",
-            type: "bar",
-            data: [this.retinexCount, this.dcpCount],
-          },
-        ],
-      };
-      myChart.setOption(option);
+   myEcharts() {
+      // 初始化图表实例
+      this.myChart = this.$echarts.init(document.getElementById("main"));
+      // 绑定图表配置
+      this.myChart.setOption(chartOption);
     },
     async getAlgorithmUsage() {
-      try {
+       try {
         const response = await axios.get("/api/algorithm-usage");
         const data = response.data;
+        console.log(data.NonLocalCount);
         this.retinexCount = data.retinexCount;
         this.dcpCount = data.dcpCount;
+        this.NonLocalCount = data.NonLocalCount;
+        this.CLAHECount = data.CLAHECount;
+        this.CAPCount = data.capCount;
         // 更新图表数据
         this.updateChartData();
       } catch (error) {
@@ -87,7 +96,7 @@ export default {
       myChart.setOption({
         series: [
           {
-            data: [this.retinexCount, this.dcpCount],
+            data: [this.retinexCount, this.dcpCount, this.NonLocalCount, this.CLAHECount, this.CAPCount],
           },
         ],
       });

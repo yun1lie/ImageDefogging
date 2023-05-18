@@ -222,37 +222,42 @@ def hadnle_image_DCP():
 @app.route('/handleLocal', methods=['POST'])
 def hadnle_image_Local():
     screen_image_url = request.json.get('screenImageUrl')
-    url = './' + 'static' + screen_image_url.split('static')[1] 
+    url = './' + 'static' + screen_image_url.split('static')[1]
     nld = NonLocalDehazer(url)
     nld.run()
     output_path = 'http://127.0.0.1:5000/' + \
         url.split(".")[0] + url.split(".")[1] + "_NonLocal.jpg"
+    increase_NonLocal_count()
     return jsonify({'result': 'success', 'url': output_path})
 
 
 @app.route('/handleClahe', methods=['POST'])
 def hadnle_image_Clahe():
     screen_image_url = request.json.get('screenImageUrl')
-    url = './' + 'static' + screen_image_url.split('static')[1] 
-    
+    url = './' + 'static' + screen_image_url.split('static')[1]
+
     clahe = Clahe(url)
     clahe.split_channels()
     clahe.apply_clahe()
     clahe.merge_channels()
-    
+
     output_path = 'http://127.0.0.1:5000/' + \
         url.split(".")[0] + url.split(".")[1] + "_CLAHE.jpg"
     clahe.save_images()
+    increase_CLAHE_count()
     return jsonify({'result': 'success', 'url': output_path})
+
 
 @app.route('/handleCap', methods=['POST'])
 def hadnle_image_Cap():
     screen_image_url = request.json.get('screenImageUrl')
-    url = './' + 'static' + screen_image_url.split('static')[1] 
+    url = './' + 'static' + screen_image_url.split('static')[1]
     dehaze = Cap(url, beta=1)
     dehaze.dehaze()
     output_path = 'http://127.0.0.1:5000/' + \
         url.split(".")[0] + url.split(".")[1] + "_Cap.jpg"
+        
+    increase_CAP_count()
 
     return jsonify({'result': 'success', 'url': output_path})
 
@@ -300,7 +305,11 @@ def userMan():
 def get_algorithm_usage():
     algorithm_usage = {
         "retinexCount": 0,
-        "dcpCount": 0
+        "dcpCount": 0,
+        "NonLocalCount": 0,
+        "capCount": 0,
+        "CLAHECount": 0,
+
     }
     with db_conn.cursor() as cursor:
         sql = "SELECT * FROM algorithm_usage WHERE algorithm_name=%s"
@@ -313,6 +322,23 @@ def get_algorithm_usage():
         result = cursor.fetchone()
         if result:
             algorithm_usage['dcpCount'] = result['usage_count']
+            
+        
+        cursor.execute(sql, ('NonLocal',))
+        result = cursor.fetchone()
+        if result:
+            algorithm_usage['NonLocalCount'] = result['usage_count']
+            
+        
+        cursor.execute(sql, ('CLAHE',))
+        result = cursor.fetchone()
+        if result:
+            algorithm_usage['CLAHECount'] = result['usage_count']
+            
+        cursor.execute(sql, ('CAP',))
+        result = cursor.fetchone()
+        if result:
+            algorithm_usage['capCount'] = result['usage_count']
 
     return jsonify(algorithm_usage)
 
@@ -352,6 +378,59 @@ def increase_dcp_count():
             # 如果不存在记录，插入新的记录
             sql = "INSERT INTO algorithm_usage (algorithm_name, usage_count) VALUES (%s, %s)"
             cursor.execute(sql, ('dcp', 1))
+    db_conn.commit()
+    
+def increase_NonLocal_count():
+    with db_conn.cursor() as cursor:
+        # 查询当前使用次数
+        sql = "SELECT * FROM algorithm_usage WHERE algorithm_name='NonLocal'"
+        cursor.execute(sql)
+        result = cursor.fetchone()
+        if result:
+            usage_count = result['usage_count'] + 1
+            # 更新使用次数
+            sql = "UPDATE algorithm_usage SET usage_count=%s WHERE algorithm_name='NonLocal'"
+            cursor.execute(sql, (usage_count,))
+        else:
+            # 如果不存在记录，插入新的记录
+            sql = "INSERT INTO algorithm_usage (algorithm_name, usage_count) VALUES (%s, %s)"
+            cursor.execute(sql, ('NonLocal', 1))
+    db_conn.commit()
+    
+def increase_CLAHE_count():
+    with db_conn.cursor() as cursor:
+        # 查询当前使用次数
+        sql = "SELECT * FROM algorithm_usage WHERE algorithm_name='CLAHE'"
+        cursor.execute(sql)
+        result = cursor.fetchone()
+        if result:
+            usage_count = result['usage_count'] + 1
+            # 更新使用次数
+            sql = "UPDATE algorithm_usage SET usage_count=%s WHERE algorithm_name='CLAHE'"
+            cursor.execute(sql, (usage_count,))
+        else:
+            # 如果不存在记录，插入新的记录
+            sql = "INSERT INTO algorithm_usage (algorithm_name, usage_count) VALUES (%s, %s)"
+            cursor.execute(sql, ('CLAHE', 1))
+    db_conn.commit()
+    
+
+def increase_CAP_count():
+    with db_conn.cursor() as cursor:
+        # 查询当前使用次数
+        sql = "SELECT * FROM algorithm_usage WHERE algorithm_name='CAP'"
+        cursor.execute(sql)
+        result = cursor.fetchone()
+        if result:
+            usage_count = result['usage_count'] + 1
+            # 更新使用次数
+            sql = "UPDATE algorithm_usage SET usage_count=%s WHERE algorithm_name='CAP'"
+            print(sql)
+            cursor.execute(sql, (usage_count,))
+        else:
+            # 如果不存在记录，插入新的记录
+            sql = "INSERT INTO algorithm_usage (algorithm_name, usage_count) VALUES (%s, %s)"
+            cursor.execute(sql, ('CAP', 1))
     db_conn.commit()
 
 
