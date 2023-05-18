@@ -43,7 +43,6 @@ export default {
     return { realName: null };
   },
   created() {
-    // location.reload();
   },
 
   computed: {
@@ -56,7 +55,6 @@ export default {
   },
   methods: {
     handleLogout() {
-      console.log("aaaaaaaaaaaaa");
       localStorage.removeItem("token"); // 清空本地存储中的 Token
       localStorage.removeItem("user"); // 清空本地存储中的 User
       this.$router.push("/"); // 跳转到首页
@@ -73,7 +71,6 @@ export default {
           localStorage.setItem("user", JSON.stringify(response.data));
           const user = JSON.parse(localStorage.getItem("user"));
           this.realName = user.user.real_name;
-          console.log(this.realName);
         })
         .catch((error) => {
           console.error(error);
@@ -115,14 +112,5 @@ export default {
 .nav {
   width: 80%;
   display: flex;
-  /* align-items: center; */
 }
-
-/* .user-info {
-  position: absolute;
-  right: 30px;
-  top: 50%;
-  transform: translateY(-50%);
-  line-height: 1;
-} */
 </style>
